@@ -5058,8 +5058,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   ];
   var FIN_ROWS = [
     ["apport", "Apport des associés", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
-    ["duree", "Durée du prêt", "ans"], ["honneur", "Prêts d’honneur (0 %)", "€"],
-    ["dureeHonneur", "Durée des prêts d’honneur", "ans"], ["subvention", "Subventions", "€"]
+    ["duree", "Durée du prêt", "ans"], ["honneur", "Prêts d’honneur (0 %, apport des fondateurs)", "€"], ["subvention", "Subventions", "€"]
   ];
 
   var state, savedAt = null, monthYear = 0;
@@ -5119,7 +5118,9 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     delais: ["Service-public : délais de paiement entre entreprises", "https://entreprendre.service-public.gouv.fr/vosdroits/F23211"],
     is: ["Service-public : impôt sur les sociétés", "https://entreprendre.service-public.gouv.fr/vosdroits/F23575"],
     urssaf: ["Simulateur de coût d’embauche Urssaf", "https://mon-entreprise.urssaf.fr"],
-    initiative: ["Initiative France, prêt d’honneur à 0 %", "https://www.initiative-france.fr"],
+    initiative: ["Initiative France : le prêt d’honneur", "https://www.initiative-france.fr/nos-solutions/financement-le-pret-d-honneur.html"],
+    initiativeNA: ["Région Nouvelle-Aquitaine : prêts d’honneur Initiative", "https://les-aides.nouvelle-aquitaine.fr/amenagement-du-territoire/prets-dhonneur-initiative-nouvelle-aquitaine-creation-reprise-et-developpement-dentreprise"],
+    bpiHonneur: ["Bpifrance Création : prêt d’honneur", "https://bpifrance-creation.fr/encyclopedie/financements/financement-fonds-propres/pret-dhonneur"],
     chambres: ["Chambres d’agriculture", "https://chambres-agriculture.fr"],
     dji: ["DJI, caractéristiques du Mavic 3M", "https://enterprise.dji.com/fr/mavic-3-m/specs"],
     drone: ["Ministère : drones en catégorie spécifique", "https://www.ecologie.gouv.fr/politiques-publiques/exploitation-drones-categorie-specifique"],
@@ -5150,11 +5151,11 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     pret: { t: "Prêt bancaire", d: "Montant emprunté, remboursé par annuités constantes. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
     taux: { t: "Taux du prêt", d: "Taux annuel hypothétique, à remplacer par une offre de banque.", s: [] },
     duree: { t: "Durée du prêt", d: "Nombre d’années de remboursement.", s: [] },
-    honneur: { t: "Prêts d’honneur", d: "Prêts personnels à 0 %, sans garantie, accordés aux créateurs (Initiative France, France Active). Ils renforcent l’apport et facilitent le prêt bancaire.", s: ["initiative"] },
-    dureeHonneur: { t: "Durée des prêts d’honneur", d: "Remboursés à parts égales chaque année.", s: ["initiative"] },
+    honneur: { t: "Prêts d’honneur", d: "Prêt à 0 %, sans garantie, accordé au fondateur (pas à la société) qui l’apporte ensuite au capital. C’est donc lui qui le rembourse, pas l’entreprise. Montants : 3 000 à 50 000 € chez Initiative France, environ 10 000 € en moyenne ; 3 000 à 30 000 € sur 2 à 5 ans chez Initiative Nouvelle-Aquitaine. Il rassure la banque et facilite le prêt bancaire. 8 000 € : hypothèse prudente, sous la moyenne.", s: ["initiative", "initiativeNA", "bpiHonneur"] },
+    
     subvention: { t: "Subventions", d: "Aides non remboursables. Le cours de marketing rappelle qu’une subvention reste une hypothèse tant qu’elle n’est pas acquise : laisser 0 tant qu’elle n’est pas obtenue.", s: [] },
     "k:net": { t: "Résultat net", d: "Chiffre d’affaires − toutes les charges (amortissements et intérêts compris) − impôt sur les sociétés.", s: ["is"] },
-    "k:tresor": { t: "Trésorerie", d: "Argent disponible : apport + prêts + résultat + amortissements − investissements − remboursements − factures pas encore payées.", s: [] },
+    "k:tresor": { t: "Trésorerie", d: "Argent disponible : apport + prêts + résultat + amortissements − investissements − remboursement du prêt bancaire − factures pas encore payées. Le prêt d’honneur est remboursé par les fondateurs, pas par la société.", s: [] },
     "k:min": { t: "Point bas de trésorerie", d: "Le plus faible solde en fin de mois sur les 3 ans. S’il est négatif, il manque de l’argent à un moment, même si l’année finit bien.", s: [] },
     "r:besoin": { t: "Techniciens nécessaires", d: "Jours de tournée ÷ (jours ouvrés de la saison × part des jours volables), arrondi au-dessus. En rouge s’il en faut plus que prévu.", s: [] },
     "r:ca": { t: "Chiffre d’affaires", d: "Abonnements (fermes × ha × prix) + formule ponctuelle (fermes × (ha × prix + forfait) × analyses) + capteurs, moins la remise.", s: [] },
@@ -5263,7 +5264,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       });
       var interet = y < n ? solde * t : 0, capital = y < n ? Math.min(solde, annuite - interet) : 0;
       solde -= capital;
-      var capHonneur = y < dh ? num(f.honneur) / dh : 0;
+      var capHonneur = 0; // prêt personnel : remboursé par les fondateurs, pas par la société
       for (m = 0; m < 12; m++) outM[m] += (interet + capital + capHonneur) / 12;
       fixes += amortT + interet;
       var charges = fixes + vars;
@@ -5491,7 +5492,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     h += line("Point mort " + info("r:pm"), R.map(function (r) { return r.pointMort === null ? "non atteint" : Math.round(r.pointMort) + " jours"; }));
     h += sec("Trésorerie");
     h += line("Investissements payés", R.map(function (r) { return eur(r.invest); }));
-    h += line("Remboursement des prêts", R.map(function (r) { return eur(r.rembourse); }));
+    h += line("Remboursement du prêt bancaire", R.map(function (r) { return eur(r.rembourse); }));
     h += line("Factures pas encore payées en fin d’année (BFR) " + info("r:bfr"), R.map(function (r) { return eur(r.bfr); }));
     h += line("Point bas dans l’année", R.map(function (r) { return '<span class="' + cls(r.minM) + '">' + eur(r.minM) + "</span>"; }));
     h += line("Trésorerie en fin d’année", R.map(function (r) { return '<span class="' + cls(r.tresor) + '">' + eur(r.tresor) + "</span>"; }), "pa-strong");
