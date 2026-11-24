@@ -4766,5 +4766,24 @@ html,:host,body,.font-sans{font-family:"Instrument Sans",ui-sans-serif,system-ui
   <body class="bg-ink-950" style="background:#ecf0e4">
     <div id="root"></div>
   <a id="da-pa" href="AT_DA.html">Plan d’affaires</a>
+<script>
+/* Ouvre une page du prototype depuis l'adresse, ex. AgriTwin-prototype-DA.html#formules */
+(function () {
+  var pages = { accueil: "Vue d’ensemble", jumeau: "Jumeau numérique 3D", drone: "Suivi par drone",
+    agronomie: "Intelligence agronomique", finance: "Intelligence financière", environnement: "Intelligence environnementale",
+    operations: "Intelligence opérationnelle", recommandations: "Recommandations IA", historique: "Historique de la ferme",
+    formules: "Paramètres", parametres: "Paramètres", "etude-de-cas": "Étude de cas : stress hydrique",
+    capteurs: "Avec / sans capteurs", fonctionnement: "Fonctionnement du système" };
+  function aller() {
+    var cible = pages[decodeURIComponent(location.hash.slice(1))]; if (!cible) return;
+    var essais = 0, t = setInterval(function () {
+      var b = Array.prototype.find.call(document.querySelectorAll("#root button"), function (e) { return e.innerText.trim().indexOf(cible) === 0; });
+      if (b) { b.click(); clearInterval(t); } else if (++essais > 50) clearInterval(t);
+    }, 100);
+  }
+  window.addEventListener("hashchange", aller);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", aller); else aller();
+})();
+</script>
   </body>
 </html>

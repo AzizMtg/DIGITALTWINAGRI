@@ -116,6 +116,26 @@ assert s.count('</head>') == 1
 head = head.replace('LOGO', 'data:image/png;base64,' + open(os.path.join(D, 'logo-embleme.b64.txt')).read().strip())
 s = s.replace('</head>', head + '</head>')
 s = s.replace('<title>AgriTwin — L’intelligence agricole en service (prototype)</title>', '<title>AgriTwin, prototype</title>')
-s = s.replace('</body>', '<a id="da-pa" href="AT_DA.html">Plan d’affaires</a>\n  </body>')
+ROUTES = '''<script>
+/* Ouvre une page du prototype depuis l'adresse, ex. AgriTwin-prototype-DA.html#formules */
+(function () {
+  var pages = { accueil: "Vue d’ensemble", jumeau: "Jumeau numérique 3D", drone: "Suivi par drone",
+    agronomie: "Intelligence agronomique", finance: "Intelligence financière", environnement: "Intelligence environnementale",
+    operations: "Intelligence opérationnelle", recommandations: "Recommandations IA", historique: "Historique de la ferme",
+    formules: "Paramètres", parametres: "Paramètres", "etude-de-cas": "Étude de cas : stress hydrique",
+    capteurs: "Avec / sans capteurs", fonctionnement: "Fonctionnement du système" };
+  function aller() {
+    var cible = pages[decodeURIComponent(location.hash.slice(1))]; if (!cible) return;
+    var essais = 0, t = setInterval(function () {
+      var b = Array.prototype.find.call(document.querySelectorAll("#root button"), function (e) { return e.innerText.trim().indexOf(cible) === 0; });
+      if (b) { b.click(); clearInterval(t); } else if (++essais > 50) clearInterval(t);
+    }, 100);
+  }
+  window.addEventListener("hashchange", aller);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", aller); else aller();
+})();
+</script>
+'''
+s = s.replace('</body>', '<a id="da-pa" href="AT_DA.html">Plan d’affaires</a>\n' + ROUTES + '  </body>')
 open(OUT, 'w', encoding='utf-8', newline='').write(s)
 print('ok', len(s))
