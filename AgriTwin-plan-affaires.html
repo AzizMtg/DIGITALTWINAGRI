@@ -4958,7 +4958,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   var SCEN = { prudent: "Prudent", central: "Central", optimiste: "Optimiste" };
   var KINDS = { invest: "Investissement", an: "€ par an", mois: "€ par mois", unite: "€ par unité" };
   var BASES = {
-    fixe: "forfait", tech: "par technicien", structure: "par structure cliente",
+    fixe: "forfait", tech: "par technicien", nouvTech: "par nouveau technicien", structure: "par structure cliente",
     nouvStructure: "par nouvelle structure", ferme: "par ferme suivie",
     fermeCapteur: "par ferme avec capteurs", nouvFermeCapteur: "par nouvelle ferme avec capteurs",
     km: "par km", jour: "par jour de tournée"
@@ -4989,7 +4989,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   var DEFAULTS = {
     v: 2,
     costs: [
-      row("Investissements", "Drone DJI Mavic 3M (multispectral)", "invest", "fixe", 3800, [1, 0, 0], 3, "3 726 à 3 900 € HT selon revendeur", "https://www.flyingeye.fr", "17/11/2026"),
+      row("Investissements", "Drone DJI Mavic 3M (multispectral)", "invest", "nouvTech", 3800, [1, 1, 1], 3, "3 726 à 3 900 € HT selon revendeur", "https://www.flyingeye.fr", "17/11/2026"),
       row("Investissements", "Kit 3 batteries + hub de charge 100 W", "invest", "fixe", 412.5, [1, 0, 1], 2, "Flyingeye, 495 € TTC", "https://www.flyingeye.fr/fr/products/accessoires/dji-batterie-kit-mavic-3-enterprise"),
       row("Investissements", "Ordinateur portable pour le traitement des images", "invest", "fixe", 1500, [1, 0, 0], 3, "Estimation"),
       row("Investissements", "Développement de la plateforme (jumeau numérique)", "invest", "fixe", 0, [1, 0, 0], 3, "Fait par l’équipe : 0 € (à valoriser si besoin)"),
@@ -4997,7 +4997,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       row("Création et démarrage", "Annonce légale de constitution (SAS, forfait 2026)", "an", "fixe", 199, [1, 0, 0], 0, "Arrêté du 19/11/2025, via LegalPlace", "https://www.legalplace.fr/guides/cout-creation-sas/"),
       row("Création et démarrage", "Déclaration des bénéficiaires effectifs", "an", "fixe", 19.33, [1, 0, 0], 0, "LegalPlace", "https://www.legalplace.fr/guides/cout-creation-sas/"),
       row("Création et démarrage", "Rédaction des statuts (avocat ou plateforme)", "an", "fixe", 800, [1, 0, 0], 0, "Estimation, à confirmer par devis"),
-      row("Création et démarrage", "Formation télépilote (CATS + pratique STS + MANEX)", "an", "tech", 1480, [1, 0, 0], 0, "Minute Drone ; 950 à 2 430 € selon l’organisme", "https://minutedrone.com/formation/tarif-formation-telepilote-drone"),
+      row("Création et démarrage", "Formation télépilote (CATS + pratique STS + MANEX)", "an", "nouvTech", 1480, [1, 1, 1], 0, "Minute Drone ; 950 à 2 430 € selon l’organisme", "https://minutedrone.com/formation/tarif-formation-telepilote-drone"),
       row("Création et démarrage", "Enregistrement exploitant AlphaTango", "an", "fixe", 0, [1, 0, 0], 0, "Gratuit (DGAC)"),
       row("Personnel", "Technicien télépilote (coût employeur, SMIC)", "mois", "tech", 1987.76, [1, 1, 1], 0, "Simulateur Urssaf : SMIC 1 867,02 € brut, net 1 455,99 €, réduction générale comprise", "https://mon-entreprise.urssaf.fr", "24/11/2026"),
       row("Personnel", "Mutuelle d’entreprise (part employeur)", "mois", "tech", 27, [1, 1, 1], 0, "45 à 65 €/mois par salarié, 50 % minimum à l’employeur", "https://direct-mutuelle-groupe.com/tarif-moyen-mutuelle-collective.php"),
@@ -5075,6 +5075,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     if (!SCEN[s.scenario]) s.scenario = "central";
     if (!s.saison || s.saison.length !== 12) s.saison = DEFAULTS.saison.slice();
     s.costs.forEach(function (c) {
+      if (c.poste === "Drone DJI Mavic 3M (multispectral)" && c.base === "fixe" && String(c.q) === "1,0,0") { c.base = "nouvTech"; c.q = [1, 1, 1]; }
+      if (c.poste === "Formation télépilote (CATS + pratique STS + MANEX)" && c.base === "tech" && String(c.q) === "1,0,0") { c.base = "nouvTech"; c.q = [1, 1, 1]; }
       if (c.poste === "Technicien télépilote (coût employeur, SMIC)" && c.prix === 2100 && c.source.indexOf("modifié") === -1) {
         var dc = DEFAULTS.costs.filter(function (x) { return x.poste === c.poste; })[0];
         if (dc) { c.prix = dc.prix; c.source = dc.source; c.url = dc.url; c.date = dc.date; }
@@ -5205,7 +5207,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var on = state.saison.map(function (v) { return v ? 1 : 0; });
     var nOn = on.reduce(function (a, b) { return a + b; }, 0);
     var wSeason = on.map(function (v) { return nOn ? v / nOn : 1 / 12; });
-    var prevS = 0, prevFC = 0;
+    var prevS = 0, prevFC = 0, prevT = 0;
     for (y = 0; y < 3; y++) {
       var S = num(r.structures[y]), F = Math.round(S * num(r.fermesParStructure[y]));
       var fa = Math.round(F * num(r.partAbo[y]) / 100), fp = F - fa;
@@ -5216,7 +5218,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       var vols = fa * num(r.volsAbo[y]) + fp * num(r.analysesPonct[y]);
       var jours = num(r.fermesParJour[y]) > 0 ? vols / num(r.fermesParJour[y]) : 0;
       var km = jours * num(r.kmParJour[y]) + nS * num(r.visites[y]) * num(r.kmVisite[y]);
-      var tech = num(r.techniciens[y]);
+      var tech = num(r.techniciens[y]), nT = Math.max(0, tech - prevT);
+      prevT = tech;
       var capa = num(r.joursDispo[y]) * num(r.volable[y]) / 100;
       var caAbo = fa * ha * num(r.prixAbo[y]);
       var caPonct = fp * (ha * num(r.prixPonct[y]) + num(r.forfaitPonct[y])) * num(r.analysesPonct[y]);
@@ -5229,7 +5232,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
         besoin: capa > 0 ? Math.max(1, Math.ceil(jours / capa - 1e-9)) : Infinity,
         caAbo: caAbo, caPonct: caPonct, caCapt: caCapt, remise: brut * rem, ca: brut * (1 - rem), bill: bill,
         delaiM: Math.min(12, Math.max(0, Math.round(num(r.delai[y]) / 30))),
-        base: { fixe: 1, tech: tech, structure: S, nouvStructure: nS, ferme: F, fermeCapteur: fc, nouvFermeCapteur: nFC, km: km, jour: jours } });
+        base: { fixe: 1, tech: tech, nouvTech: nT, structure: S, nouvStructure: nS, ferme: F, fermeCapteur: fc, nouvFermeCapteur: nFC, km: km, jour: jours } });
     }
     var lines = state.costs.map(function (c) {
       var mult = c.kind === "mois" ? 12 : 1, amounts = [];
