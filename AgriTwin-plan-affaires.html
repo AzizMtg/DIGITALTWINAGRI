@@ -4810,7 +4810,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
 .pa-chart svg{width:100%;height:auto;display:block}
 .pa-legend{display:flex;gap:16px;font-size:12px;color:var(--pa-soft);margin-bottom:4px}
 .pa-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-.pa-grid{stroke:#26332a;stroke-width:1}
+.pa-gl{stroke:#26332a;stroke-width:1}
 .pa-base{stroke:#5f6a61;stroke-width:1}
 .pa-cross{stroke:#7f897f;stroke-width:1}
 .pa-ax{fill:#7f897f;font:11px Inter,system-ui,sans-serif}
@@ -4819,7 +4819,17 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
 #pa-month-table{min-width:1150px}
 .pa-cols>div>.pa-h2:first-child{margin-top:26px}
 #pa-cmp-table{min-width:640px}
-@media(max-width:640px){.pa-body{padding:16px}.pa-head{padding:12px 16px}.pa-tabs{padding:0 8px}}
+.pa-i{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;padding:0;margin-left:2px;border-radius:50%;border:1px solid #4a5a4f;background:#18221b;color:var(--pa-sage);font:700 11px/1 Inter,system-ui,sans-serif;cursor:help;vertical-align:1px;flex:none}
+.pa-i:hover,.pa-i:focus-visible{border-color:var(--pa-wheat2);color:var(--pa-wheat);outline:none}
+.pa-withi{display:inline-flex;align-items:center;gap:4px}
+.pa-pop{position:fixed;z-index:2147483003;display:none;max-width:320px;background:#1b2620;border:1px solid #3a4a3f;border-radius:10px;padding:10px 12px;font:13px/1.45 Inter,system-ui,sans-serif;color:#e7e5dc;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.pa-pop b{display:block;margin-bottom:4px;color:var(--pa-wheat)}
+.pa-pop p{margin:0;color:#c9cbc0}
+.pa-pop ul{margin:8px 0 0;padding:0;list-style:none}
+.pa-pop li{margin-top:3px}
+.pa-pop a{color:var(--pa-sage);text-decoration:underline}
+@media(max-width:1599px){#root header>.hidden.xl\:block{display:none!important}}
+@media(max-width:640px){.pa-kpis{grid-template-columns:1fr 1fr}.pa-kpi span{font-size:16px}.pa-head .pa-btn{padding:5px 9px;font-size:12px}.pa-title small{display:none}.pa-tabs{scrollbar-width:none}.pa-tabs::-webkit-scrollbar{display:none}.pa-scen-n{margin-left:0}.pa-body{padding:16px}.pa-head{padding:12px 16px}.pa-tabs{padding:0 8px}}
 </style>
 <div id="pa-root">
   <button id="pa-launch" type="button" title="Ouvrir l’espace Plan d’affaires"><span></span>Plan d’affaires</button>
@@ -4850,7 +4860,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
         <div class="pa-grid">
           <div class="pa-card"><span class="pa-tag pa-pay">Payeur principal</span><h3>Coopératives agricoles</h3><p>Elles vendent les intrants et conseillent leurs adhérents : la carte de vigueur sert directement leur conseil. Achat par contrat-cadre, pour N fermes adhérentes.</p></div>
           <div class="pa-card"><span class="pa-tag pa-pay">Payeur</span><h3>CUMA</h3><p>Coopératives de matériel partagé : le modèle colle à la mise à disposition et au leasing du drone.</p></div>
-          <div class="pa-card"><span class="pa-tag pa-pay">Payeur sous conditions</span><h3>Chambres d’agriculture 87 et 23</h3><p>Établissements publics : ils achètent par la commande publique, selon des procédures qui dépendent du montant (à vérifier). Certaines chambres ont déjà leur propre drone (Loiret, 2015) : elles sont aussi des concurrents possibles.</p></div>
+          <div class="pa-card"><span class="pa-tag pa-pay">Payeur sous conditions</span><h3>Chambres d’agriculture 87 et 23 <button type="button" class="pa-i" data-info="m:chambres" aria-label="Source et explication">?</button></h3><p>Établissements publics : ils achètent par la commande publique, selon des procédures qui dépendent du montant (à vérifier). Certaines chambres ont déjà leur propre drone (Loiret, 2015) : elles sont aussi des concurrents possibles.</p></div>
           <div class="pa-card"><span class="pa-tag pa-pay">Payeur</span><h3>Banques et assureurs agricoles</h3><p>Le suivi des cultures les aide à évaluer le risque d’une exploitation. Un assureur est aussi le bon partenaire pour l’idée de « garantie ».</p></div>
           <div class="pa-card"><span class="pa-tag pa-relay">Relais</span><h3>Syndicats (FDSEA, JA, Confédération paysanne, Coordination rurale)</h3><p>Financés par les cotisations, avec des budgets limités : ils font plutôt connaître l’offre à leurs adhérents qu’ils ne la paient.</p></div>
           <div class="pa-card"><span class="pa-tag pa-relay">Vitrines</span><h3>Gros agriculteurs connus</h3><p>Quelques exploitations reconnues pour montrer le service et convaincre les structures.</p></div>
@@ -4859,15 +4869,15 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
 
         <h2 class="pa-h2">Ce qu’on vend</h2>
         <div class="pa-grid">
-          <div class="pa-card"><h3>Le cœur : vol, analyse et jumeau numérique</h3><ul><li><b>Abonnement</b> : 60 €/ha/an, un vol toutes les deux semaines en saison (15 vols).</li><li><b>Formule ponctuelle</b> : prix par hectare et par analyse, plus un forfait de déplacement.</li><li><b>Option capteurs</b> : sondes de sol, ≈ 9 €/ha/an.</li></ul></div>
+          <div class="pa-card"><h3>Le cœur : vol, analyse et jumeau numérique</h3><ul><li><b>Abonnement</b> : 60 €/ha/an, un vol toutes les deux semaines en saison (15 vols). <button type="button" class="pa-i" data-info="prixAbo" aria-label="Source et explication">?</button></li><li><b>Formule ponctuelle</b> : prix par hectare et par analyse, plus un forfait de déplacement.</li><li><b>Option capteurs</b> : sondes de sol, ≈ 9 €/ha/an. <button type="button" class="pa-i" data-info="prixCapteurs" aria-label="Source et explication">?</button></li></ul></div>
           <div class="pa-card"><h3>Services autour (deux ou trois au plus)</h3><ul><li>Formation des techniciens des structures, vendue avec la licence du logiciel (pas seule, sinon ils se passent de nous).</li><li>Drone mis à disposition ou en leasing.</li><li>Veille technologique, prix et réglementation.</li><li>Accompagnement « de la terre au rendement max », sensibilisation au climat.</li></ul></div>
           <div class="pa-card"><h3>À reformuler ou à retirer</h3><ul><li>« Système de garantie » : garantir un rendement relève de l’assurance (activité réglementée) → partenariat avec un assureur.</li><li>Avocatiers et grenadiers : trop risqué avec les gelées du Limousin, hors du cœur du projet.</li></ul></div>
         </div>
 
         <h2 class="pa-h2">Zone et organisation des vols</h2>
         <div class="pa-grid">
-          <div class="pa-card"><h3>Haute-Vienne (87)</h3><p>283 880 ha déclarés (RPG 2024), dont ≈ 80 000 ha cultivés hors prairies. 60 communes ont au moins 500 ha cultivés (cœur de cible), surtout au nord (Basse-Marche) et au sud.</p></div>
-          <div class="pa-card"><h3>Creuse (23)</h3><p>317 275 ha déclarés, 3 478 exploitations, 77 % de prairies : ≈ 72 000 ha hors prairies. Potentiel comparable, très orienté élevage.</p></div>
+          <div class="pa-card"><h3>Haute-Vienne (87) <button type="button" class="pa-i" data-info="m:87" aria-label="Source et explication">?</button></h3><p>283 880 ha déclarés (RPG 2024), dont ≈ 80 000 ha cultivés hors prairies. 60 communes ont au moins 500 ha cultivés (cœur de cible), surtout au nord (Basse-Marche) et au sud.</p></div>
+          <div class="pa-card"><h3>Creuse (23) <button type="button" class="pa-i" data-info="m:23" aria-label="Source et explication">?</button></h3><p>317 275 ha déclarés, 3 478 exploitations, 77 % de prairies : ≈ 72 000 ha hors prairies. Potentiel comparable, très orienté élevage.</p></div>
           <div class="pa-card"><h3>Optimisation</h3><ul><li>Vols de jour et par beau temps, saison de mars à septembre ; l’agriculteur est autonome l’hiver.</li><li>Hectares par drone et par jour, nombre de drones, tournées 87 + 23.</li><li>Ces réglages sont modifiables dans l’onglet « Revenus et résultat ».</li></ul></div>
         </div>
 
@@ -4875,7 +4885,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
         <div class="pa-grid">
           <div class="pa-card"><h3>Contrats</h3><ul class="pa-check"><li>Contrat-cadre avec la coopérative ou la CUMA : nombre de fermes, hectares, durée d’un an, paiement mensuel.</li><li>Chambres : réponse à la commande publique.</li><li>Conditions générales de vente pour la formule ponctuelle.</li></ul></div>
           <div class="pa-card"><h3>Société</h3><ul class="pa-check"><li>SAS à l’impôt sur les sociétés.</li><li>Formalités : guichet unique, annonce légale, bénéficiaires effectifs (chiffrés dans « Coûts »).</li></ul></div>
-          <div class="pa-card"><h3>Drone</h3><ul class="pa-check"><li>Catégorie spécifique, scénarios standard STS-01/02 : certificat théorique (CATS) et formation pratique.</li><li>Enregistrement de l’exploitant sur AlphaTango.</li><li>Une station autonome qui vole hors vue demande une autorisation à part.</li><li>Assurance RC drone : l’obligation précise reste à confirmer, prévue quand même dans les coûts.</li></ul></div>
+          <div class="pa-card"><h3>Drone <button type="button" class="pa-i" data-info="m:drone" aria-label="Source et explication">?</button></h3><ul class="pa-check"><li>Catégorie spécifique, scénarios standard STS-01/02 : certificat théorique (CATS) et formation pratique.</li><li>Enregistrement de l’exploitant sur AlphaTango.</li><li>Une station autonome qui vole hors vue demande une autorisation à part.</li><li>Assurance RC drone : l’obligation précise reste à confirmer, prévue quand même dans les coûts.</li></ul></div>
           <div class="pa-card"><h3>Données</h3><ul class="pa-check"><li>Images et données des parcelles : qui en est propriétaire (l’exploitant), ce que la structure peut voir.</li><li>RGPD : contrat de traitement avec la structure, durée de conservation.</li></ul></div>
         </div>
 
@@ -5097,6 +5107,98 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function rev() { return state.revs[state.scenario]; }
 
+  /* ---------- Sources et explications (bouton « ? ») ---------- */
+  var SRC = {
+    agrimap: ["AgriMap, registre parcellaire 2024", "https://agri-map.fr"],
+    insee: ["Insee, recensement agricole 2020", "https://www.insee.fr"],
+    feldfalke: ["Feldfalke, prestataire drone (prix à l’hectare)", "https://www.feldfalke.com"],
+    lfa: ["La France Agricole, prix des services satellite", "https://www.lafranceagricole.fr"],
+    weenat: ["Weenat, sondes et abonnement", "https://weenat.com"],
+    delais: ["Service-public : délais de paiement entre entreprises", "https://entreprendre.service-public.gouv.fr/vosdroits/F23211"],
+    is: ["Service-public : impôt sur les sociétés", "https://entreprendre.service-public.gouv.fr/vosdroits/F23575"],
+    urssaf: ["Simulateur de coût d’embauche Urssaf", "https://mon-entreprise.urssaf.fr"],
+    initiative: ["Initiative France, prêt d’honneur à 0 %", "https://www.initiative-france.fr"],
+    chambres: ["Chambres d’agriculture", "https://chambres-agriculture.fr"],
+    dji: ["DJI, caractéristiques du Mavic 3M", "https://enterprise.dji.com/fr/mavic-3-m/specs"],
+    drone: ["Ministère : drones en catégorie spécifique", "https://www.ecologie.gouv.fr/politiques-publiques/exploitation-drones-categorie-specifique"],
+    dgac: ["DGAC : formations de télépilote", "https://formation-telepilote.aviation-civile.gouv.fr/"]
+  };
+  var INFO = {
+    structures: { t: "Structures clientes", d: "Nombre de coopératives, CUMA ou autres structures qui achètent le service pour leurs adhérents. Hypothèse : prudent 2/3/5, central 3/6/9, optimiste 4/8/12. À confirmer par l’étude des payeurs (budgets, décideurs).", s: [] },
+    fermesParStructure: { t: "Fermes par structure", d: "Nombre de fermes adhérentes que chaque structure fait suivre. Hypothèse de départ : 4 fermes par structure.", s: [] },
+    ha: { t: "Surface moyenne d’une ferme", d: "Haute-Vienne : 3 604 exploitations pour 286 004 ha de surface agricole (recensement 2020), soit ≈ 79 ha en moyenne. Arrondi à 80 ha.", s: ["insee", "agrimap"] },
+    partAbo: { t: "Part en abonnement", d: "Part des fermes suivies en abonnement ; le reste prend la formule ponctuelle. Hypothèse : 75 %.", s: [] },
+    prixAbo: { t: "Prix de l’abonnement", d: "60 €/ha/an pour 15 vols, soit 4 €/ha par vol. Repères : un prestataire drone facture dès 15 €/ha par vol ; le satellite coûte 12 à 16 €/ha par campagne ; le gain annoncé pour l’agriculteur va de 28 à 60 €/ha. Prix retenu le 17/11/2026 (scénario C).", s: ["feldfalke", "lfa"] },
+    volsAbo: { t: "Vols par an", d: "Un vol toutes les deux semaines sur une saison de 30 semaines = 15 vols. Choisi le 17/11/2026 pour éviter un 2e technicien dès la 1re année.", s: [] },
+    prixPonct: { t: "Formule ponctuelle", d: "Prix par hectare et par analyse. Marché : 10 à 15 €/ha pour deux vols (Airinov, coopératives), 12 à 15 €/ha (chambre d’agriculture du Loiret, 2015), dès 15 €/ha par vol (Feldfalke). 10 €/ha reste dans le bas du marché.", s: ["feldfalke"] },
+    analysesPonct: { t: "Analyses par an", d: "Nombre de passages commandés par une ferme en formule ponctuelle. Hypothèse : 2 (par exemple les deux apports d’azote).", s: [] },
+    forfaitPonct: { t: "Forfait de déplacement", d: "Facturé à chaque analyse ponctuelle. Il remplace les « 30 € d’installation » du tableau blanc. Hypothèse.", s: [] },
+    partCapteurs: { t: "Option capteurs", d: "Part des fermes en abonnement qui ajoutent les sondes de sol. Hypothèse : 30 % (central).", s: [] },
+    prixCapteurs: { t: "Prix de l’option capteurs", d: "≈ 9 €/ha/an pour 3 sondes, repris du prototype. Coût en face : sonde Weenat ≈ 350 € et abonnement aux données 16,50 à 50 €/mois.", s: ["weenat"] },
+    remise: { t: "Remise aux structures", d: "Remise sur volume accordée à une structure qui fait suivre plusieurs fermes. 0 % par défaut.", s: [] },
+    delai: { t: "Délai de paiement", d: "Temps entre la facture et le paiement. Entre entreprises, la loi plafonne à 60 jours après la facture (ou 45 jours fin de mois). Les factures pas encore payées en fin d’année forment le BFR.", s: ["delais"] },
+    techniciens: { t: "Techniciens", d: "Chaque technicien a sa fourgonnette, sa formation, son téléphone et sa mutuelle (lignes « par technicien » de l’onglet Coûts). Comparez avec la ligne « Techniciens nécessaires ».", s: [] },
+    fermesParJour: { t: "Fermes par jour de tournée", d: "Nombre de fermes de 80 ha survolées en une journée, trajets compris. Hypothèse du 17/11/2026.", s: [] },
+    kmParJour: { t: "Km par jour", d: "Distance moyenne d’une journée de tournée en Haute-Vienne et Creuse. Hypothèse du 17/11/2026.", s: [] },
+    visites: { t: "Visites commerciales", d: "Rendez-vous nécessaires pour signer une nouvelle structure. Hypothèse : 3 visites.", s: [] },
+    kmVisite: { t: "Km par visite", d: "Aller-retour moyen vers une structure du département. Hypothèse : 70 km.", s: [] },
+    joursDispo: { t: "Jours ouvrés de la saison", d: "Saison de vol de mars à septembre : environ 30 semaines × 5 jours = 150 jours par technicien.", s: [] },
+    volable: { t: "Jours où l’on peut voler", d: "Pluie et vent fort empêchent les vols ; le Mavic 3M résiste à un vent d’environ 12 m/s. 60 % est une estimation, à confirmer avec les relevés de Météo-France pour Limoges.", s: ["dji"] },
+    apport: { t: "Apport des associés", d: "Argent mis par les fondateurs au capital. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
+    pret: { t: "Prêt bancaire", d: "Montant emprunté, remboursé par annuités constantes. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
+    taux: { t: "Taux du prêt", d: "Taux annuel hypothétique, à remplacer par une offre de banque.", s: [] },
+    duree: { t: "Durée du prêt", d: "Nombre d’années de remboursement.", s: [] },
+    honneur: { t: "Prêts d’honneur", d: "Prêts personnels à 0 %, sans garantie, accordés aux créateurs (Initiative France, France Active). Ils renforcent l’apport et facilitent le prêt bancaire.", s: ["initiative"] },
+    dureeHonneur: { t: "Durée des prêts d’honneur", d: "Remboursés à parts égales chaque année.", s: ["initiative"] },
+    subvention: { t: "Subventions", d: "Aides non remboursables. Le cours de marketing rappelle qu’une subvention reste une hypothèse tant qu’elle n’est pas acquise : laisser 0 tant qu’elle n’est pas obtenue.", s: [] },
+    "k:net": { t: "Résultat net", d: "Chiffre d’affaires − toutes les charges (amortissements et intérêts compris) − impôt sur les sociétés.", s: ["is"] },
+    "k:tresor": { t: "Trésorerie", d: "Argent disponible : apport + prêts + résultat + amortissements − investissements − remboursements − factures pas encore payées.", s: [] },
+    "k:min": { t: "Point bas de trésorerie", d: "Le plus faible solde en fin de mois sur les 3 ans. S’il est négatif, il manque de l’argent à un moment, même si l’année finit bien.", s: [] },
+    "r:besoin": { t: "Techniciens nécessaires", d: "Jours de tournée ÷ (jours ouvrés de la saison × part des jours volables), arrondi au-dessus. En rouge s’il en faut plus que prévu.", s: [] },
+    "r:ca": { t: "Chiffre d’affaires", d: "Abonnements (fermes × ha × prix) + formule ponctuelle (fermes × (ha × prix + forfait) × analyses) + capteurs, moins la remise.", s: [] },
+    "r:structure": { t: "Ce que paie une structure", d: "Chiffre d’affaires ÷ nombre de structures, puis par ferme et par hectare. À comparer au gain annoncé pour l’agriculteur : 28 à 60 €/ha.", s: [] },
+    "r:amort": { t: "Amortissements", d: "Un achat de plus de 500 € HT qui n’est pas un consommable est étalé sur sa durée d’usage (cours de finance) : prix ÷ durée chaque année.", s: [] },
+    "r:is": { t: "Impôt sur les sociétés", d: "15 % jusqu’à 42 500 € de bénéfice (taux réduit des PME), 25 % au-delà. Les pertes d’une année réduisent le bénéfice imposable des suivantes.", s: ["is"] },
+    "r:seuil": { t: "Seuil de rentabilité", d: "Charges fixes ÷ taux de marge sur coûts variables (formule du cours de finance). Chiffre d’affaires à partir duquel on ne perd plus d’argent.", s: [] },
+    "r:pm": { t: "Point mort", d: "Seuil de rentabilité ÷ chiffre d’affaires × 365 : le jour de l’année où le seuil est atteint.", s: [] },
+    "r:bfr": { t: "BFR", d: "Factures émises mais pas encore payées en fin d’année, à cause du délai de paiement. Cet argent manque dans la trésorerie.", s: ["delais"] },
+    "m:87": { t: "Haute-Vienne", d: "Relevé des 195 communes sur AgriMap (déclarations PAC 2024) : 283 880 ha déclarés, 79 907 ha cultivés hors prairies, 60 communes avec au moins 500 ha cultivés.", s: ["agrimap"] },
+    "m:23": { t: "Creuse", d: "AgriMap (RPG 2024) : 317 275 ha déclarés, 77 % de prairies. 3 478 exploitations au recensement agricole 2020.", s: ["agrimap", "insee"] },
+    "m:chambres": { t: "Chambres d’agriculture", d: "Établissements publics : ils achètent par la commande publique. La chambre du Loiret proposait déjà des cartes d’azote par drone en 2015 (12 à 15 €/ha).", s: ["chambres"] },
+    "m:drone": { t: "Réglementation drone", d: "Vols en catégorie spécifique, scénarios standard STS-01/02 : certificat théorique (CATS), formation pratique, enregistrement de l’exploitant sur AlphaTango. L’exploitant est responsable de plein droit des dommages au sol (Code des transports L6131-2).", s: ["drone", "dgac"] }
+  };
+  function info(key) { return '<button type="button" class="pa-i" data-info="' + esc(key) + '" aria-label="Source et explication">?</button>'; }
+  function infoContent(key) {
+    var I;
+    if (key.indexOf("cost:") === 0) {
+      var c = state.costs[+key.slice(5)]; if (!c) return "";
+      I = { t: c.poste, d: (c.url ? "Source : " : "") + c.source + ". Relevé le " + c.date + ". Prix retenu : " + String(c.prix).replace(".", ",") + " € HT " + KINDS[c.kind].replace("Investissement", "à l’achat").replace("€ ", "") + ", " + BASES[c.base] + ".", s: c.url ? [[c.url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0], c.url]] : [] };
+      if (!c.url) I.d += " Pas de source en ligne : estimation à confirmer par un devis.";
+    } else {
+      I = INFO[key]; if (!I) return "";
+      I = { t: I.t, d: I.d, s: I.s.map(function (k) { return SRC[k]; }) };
+    }
+    return "<b>" + esc(I.t) + "</b><p>" + esc(I.d) + "</p>" + (I.s.length ? "<ul>" + I.s.map(function (x) { return '<li><a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + " ↗</a></li>"; }).join("") + "</ul>" : "");
+  }
+  var pop, popFor = null, popPinned = false, popTimer = null;
+  function openPop(btn, pinned) {
+    if (!pop) {
+      pop = document.createElement("div"); pop.className = "pa-pop"; pop.setAttribute("role", "tooltip");
+      document.getElementById("pa-overlay").appendChild(pop);
+      pop.addEventListener("pointerenter", function () { clearTimeout(popTimer); });
+      pop.addEventListener("pointerleave", function () { if (!popPinned) schedClose(); });
+    }
+    clearTimeout(popTimer);
+    pop.innerHTML = infoContent(btn.getAttribute("data-info"));
+    pop.style.display = "block"; popFor = btn; popPinned = !!pinned;
+    var r = btn.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+    var x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), window.innerWidth - w - 8);
+    var y = r.bottom + 8; if (y + h > window.innerHeight - 8) y = Math.max(8, r.top - h - 8);
+    pop.style.left = x + "px"; pop.style.top = y + "px";
+  }
+  function closePop() { if (pop) pop.style.display = "none"; popFor = null; popPinned = false; }
+  function schedClose() { clearTimeout(popTimer); popTimer = setTimeout(closePop, 220); }
+
   /* ---------- Calcul ---------- */
   function compute(r) {
     var f = state.fin, ops = [], y, m;
@@ -5200,7 +5302,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
           '<td><input data-f="poste" value="' + esc(c.poste) + '"></td>' +
           '<td><select data-f="kind">' + opt(KINDS, c.kind) + "</select></td>" +
           '<td><select data-f="base">' + opt(BASES, c.base) + "</select></td>" +
-          '<td class="pa-num"><input type="number" step="any" data-f="prix" value="' + c.prix + '"></td>' +
+          '<td class="pa-num"><span class="pa-withi"><input type="number" step="any" data-f="prix" value="' + c.prix + '">' + info("cost:" + i) + "</span></td>" +
           [0, 1, 2].map(function (y) { return '<td class="pa-num"><input type="number" step="any" data-f="q" data-y="' + y + '" value="' + c.q[y] + '"></td>'; }).join("") +
           '<td class="pa-num"><input type="number" step="1" min="0" data-f="amort" value="' + (c.amort || "") + '"' + (c.kind === "invest" ? "" : " disabled placeholder=\"—\"") + "></td>" +
           [0, 1, 2].map(function (y) { return '<td class="pa-num" data-tot="' + i + "-" + y + '"></td>'; }).join("") +
@@ -5219,14 +5321,14 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var html = '<thead><tr><th>Hypothèse (' + SCEN[state.scenario] + ')</th><th>Unité</th>' + YEARS.map(function (a) { return '<th class="pa-num">' + a + "</th>"; }).join("") + "<th></th></tr></thead><tbody>";
     REV_ROWS.forEach(function (R) {
       if (R[1] === null) { html += '<tr class="pa-cat"><td colspan="6">' + R[0] + "</td></tr>"; return; }
-      html += "<tr><td>" + R[1] + '</td><td style="color:var(--pa-mute);white-space:nowrap">' + R[2] + "</td>" +
+      html += "<tr><td>" + R[1] + " " + info(R[0]) + '</td><td style="color:var(--pa-mute);white-space:nowrap">' + R[2] + "</td>" +
         [0, 1, 2].map(function (y) { return '<td class="pa-num"><input type="number" step="any" data-rev="' + R[0] + '" data-y="' + y + '" value="' + r[R[0]][y] + '"></td>'; }).join("") +
         '<td><button class="pa-btn pa-mini" type="button" data-copy="' + R[0] + '" title="Recopier A1 sur A2 et A3">=</button></td></tr>';
     });
     document.getElementById("pa-rev-table").innerHTML = html + "</tbody>";
     var fh = "<tbody>";
     FIN_ROWS.forEach(function (R) {
-      fh += "<tr><td>" + R[1] + '</td><td style="color:var(--pa-mute)">' + R[2] + '</td><td class="pa-num" style="width:140px"><input type="number" step="any" data-fin="' + R[0] + '" value="' + state.fin[R[0]] + '"></td></tr>';
+      fh += "<tr><td>" + R[1] + " " + info(R[0]) + '</td><td style="color:var(--pa-mute)">' + R[2] + '</td><td class="pa-num" style="width:140px"><input type="number" step="any" data-fin="' + R[0] + '" value="' + state.fin[R[0]] + '"></td></tr>';
     });
     document.getElementById("pa-fin-table").innerHTML = fh + "</tbody>";
     document.getElementById("pa-months").innerHTML = MOIS.map(function (lab, m) {
@@ -5254,7 +5356,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var ph = H - T - B, pw = W - L - R, gw = pw / 3, bw = Math.min(46, gw * 0.3);
     var sy = function (v) { return T + ph - v / max * ph; };
     var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Chiffre d’affaires et charges par année">';
-    for (var k = 0; k <= 4; k++) { var v = max * k / 4, yy = sy(v); s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" class="pa-grid"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" class="pa-ax" text-anchor="end">' + keur(v) + "</text>"; }
+    for (var k = 0; k <= 4; k++) { var v = max * k / 4, yy = sy(v); s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" class="pa-gl"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" class="pa-ax" text-anchor="end">' + keur(v) + "</text>"; }
     data.forEach(function (d, y) {
       var cx = L + gw * y + gw / 2;
       [[d.ca, C_CA, cx - bw - 1, "Chiffre d’affaires"], [d.ch, C_CH, cx + 1, "Charges"]].forEach(function (b) {
@@ -5270,8 +5372,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     el.innerHTML = '<div class="pa-legend"><span><i style="background:' + C_CA + '"></i>Chiffre d’affaires</span><span><i style="background:' + C_CH + '"></i>Charges</span></div>' + s;
     Array.prototype.forEach.call(el.querySelectorAll("[data-hy]"), function (r) {
       var y = +r.getAttribute("data-hy"), d = data[y];
-      r.addEventListener("mousemove", function (e) { showTip(e, "<b>" + YEARS[y] + "</b><br>Chiffre d’affaires : " + eur(d.ca) + "<br>Charges : " + eur(d.ch) + "<br>Résultat net : " + eur(d.net)); });
-      r.addEventListener("mouseleave", hideTip);
+      r.addEventListener("pointermove", function (e) { showTip(e, "<b>" + YEARS[y] + "</b><br>Chiffre d’affaires : " + eur(d.ca) + "<br>Charges : " + eur(d.ch) + "<br>Résultat net : " + eur(d.net)); });
+      r.addEventListener("pointerleave", hideTip);
     });
   }
   function chartCash(C) {
@@ -5285,8 +5387,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var pw = W - L - R, ph = H - T - B;
     var sx = function (i) { return L + i / (pts.length - 1) * pw; }, sy = function (v) { return T + (hi - v) / (hi - lo) * ph; };
     var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Trésorerie en fin de mois">';
-    for (var v = lo; v <= hi + 1e-6; v += step) { var yy = sy(v); s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" class="' + (Math.abs(v) < 1e-6 ? "pa-base" : "pa-grid") + '"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" class="pa-ax" text-anchor="end">' + keur(v) + "</text>"; }
-    [12, 24].forEach(function (i) { s += '<line x1="' + sx(i) + '" x2="' + sx(i) + '" y1="' + T + '" y2="' + (T + ph) + '" class="pa-grid" stroke-dasharray="3 3"/>'; });
+    for (var v = lo; v <= hi + 1e-6; v += step) { var yy = sy(v); s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" class="' + (Math.abs(v) < 1e-6 ? "pa-base" : "pa-gl") + '"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" class="pa-ax" text-anchor="end">' + keur(v) + "</text>"; }
+    [12, 24].forEach(function (i) { s += '<line x1="' + sx(i) + '" x2="' + sx(i) + '" y1="' + T + '" y2="' + (T + ph) + '" class="pa-gl" stroke-dasharray="3 3"/>'; });
     YEARS.forEach(function (a, y) { s += '<text x="' + sx(y * 12 + 6.5) + '" y="' + (H - 9) + '" class="pa-ax" text-anchor="middle">' + a + "</text>"; });
     s += '<polyline fill="none" stroke="' + C_LINE + '" stroke-width="2" stroke-linejoin="round" points="' + pts.map(function (p, i) { return sx(i) + "," + sy(p.v); }).join(" ") + '"/>';
     var iMin = 1; for (var i = 1; i < pts.length; i++) if (pts[i].v < pts[iMin].v) iMin = i;
@@ -5297,19 +5399,19 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var el = document.getElementById("pa-chart-cash");
     el.innerHTML = s;
     var svg = el.querySelector("svg"), hit = el.querySelector("#pa-hit"), cr = el.querySelector("#pa-cross"), dot = el.querySelector("#pa-crossdot");
-    hit.addEventListener("mousemove", function (e) {
+    hit.addEventListener("pointermove", function (e) {
       var b = svg.getBoundingClientRect(), x = (e.clientX - b.left) / b.width * W;
       var i = Math.max(0, Math.min(pts.length - 1, Math.round((x - L) / pw * (pts.length - 1))));
       cr.setAttribute("x1", sx(i)); cr.setAttribute("x2", sx(i)); cr.style.display = "";
       dot.setAttribute("cx", sx(i)); dot.setAttribute("cy", sy(pts[i].v)); dot.style.display = "";
       showTip(e, "<b>" + pts[i].lab + "</b><br>Trésorerie : " + eur(pts[i].v));
     });
-    hit.addEventListener("mouseleave", function () { cr.style.display = "none"; dot.style.display = "none"; hideTip(); });
+    hit.addEventListener("pointerleave", function () { cr.style.display = "none"; dot.style.display = "none"; hideTip(); });
   }
 
   /* ---------- Onglet Revenus : résultats ---------- */
   function cls(n) { return n < 0 ? "pa-neg" : "pa-pos"; }
-  function kpi(label, val, c) { return '<div class="pa-kpi"><b>' + esc(label) + '</b><span class="' + (c || "") + '">' + val + "</span></div>"; }
+  function kpi(label, val, c, k) { return '<div class="pa-kpi"><b>' + esc(label) + (k ? " " + info(k) : "") + '</b><span class="' + (c || "") + '">' + val + "</span></div>"; }
   function line(label, vals, extra) {
     return "<tr" + (extra ? ' class="' + extra + '"' : "") + "><td>" + label + "</td>" + vals.map(function (v) { return '<td class="pa-num">' + v + "</td>"; }).join("") + "</tr>";
   }
@@ -5331,9 +5433,9 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var R = C.res, O = C.ops;
     var minAll = Math.min.apply(null, R.map(function (r) { return r.minM; }));
     document.getElementById("pa-kpis").innerHTML =
-      R.map(function (r, y) { return kpi("Résultat net " + YEARS[y], eur(r.net), cls(r.net)); }).join("") +
-      kpi("Trésorerie fin A3", eur(R[2].tresor), cls(R[2].tresor)) +
-      kpi("Point bas de trésorerie", eur(minAll), cls(minAll));
+      R.map(function (r, y) { return kpi("Résultat net " + YEARS[y], eur(r.net), cls(r.net), "k:net"); }).join("") +
+      kpi("Trésorerie fin A3", eur(R[2].tresor), cls(R[2].tresor), "k:tresor") +
+      kpi("Point bas de trésorerie", eur(minAll), cls(minAll), "k:min");
     var w = [];
     O.forEach(function (o, y) { if (o.occ > 1) w.push(YEARS[y] + " : il faut " + o.besoin + " technicien(s) pour " + Math.round(o.jours) + " jours de tournée (" + Math.round(o.occ * 100) + " % de la capacité actuelle). Ajoutez un technicien ou espacez les vols."); });
     R.forEach(function (r, y) { if (r.minM < 0) w.push(YEARS[y] + " : la trésorerie passe sous zéro dans l’année (point bas " + eur(r.minM) + "). Augmentez l’apport ou le prêt."); });
@@ -5359,35 +5461,35 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     h += line("Vols par an", O.map(function (o) { return Math.round(o.vols); }));
     h += line("Jours de tournée", O.map(function (o) { return Math.round(o.jours); }));
     h += line("Kilomètres", O.map(function (o) { return Math.round(o.km).toLocaleString("fr-FR"); }));
-    h += line("Techniciens nécessaires (météo comprise)", O.map(function (o) { return isFinite(o.besoin) ? '<span class="' + (o.besoin > o.tech ? "pa-neg" : "") + '">' + o.besoin + " (prévu : " + o.tech + ")</span>" : "—"; }));
+    h += line("Techniciens nécessaires (météo comprise) " + info("r:besoin"), O.map(function (o) { return isFinite(o.besoin) ? '<span class="' + (o.besoin > o.tech ? "pa-neg" : "") + '">' + o.besoin + " (prévu : " + o.tech + ")</span>" : "—"; }));
     h += line("Occupation des techniciens", O.map(function (o) { return isFinite(o.occ) ? '<span class="' + (o.occ > 1 ? "pa-neg" : "") + '">' + Math.round(o.occ * 100) + " %</span>" : "—"; }));
     h += sec("Chiffre d’affaires");
     h += line("Abonnements", O.map(function (o) { return eur(o.caAbo); }));
     h += line("Formule ponctuelle", O.map(function (o) { return eur(o.caPonct); }));
     h += line("Option capteurs", O.map(function (o) { return eur(o.caCapt); }));
     h += line("Remise aux structures", O.map(function (o) { return o.remise ? "− " + eur(o.remise) : eur(0); }));
-    h += line("Chiffre d’affaires", O.map(function (o) { return eur(o.ca); }), "pa-strong");
-    h += sec("Ce que paie une structure");
+    h += line("Chiffre d’affaires " + info("r:ca"), O.map(function (o) { return eur(o.ca); }), "pa-strong");
+    h += sec("Ce que paie une structure " + info("r:structure"));
     h += line("Par an", O.map(function (o) { return o.S > 0 ? eur(o.ca / o.S) : "—"; }));
     h += line("Par ferme et par an", O.map(function (o) { return o.F > 0 ? eur(o.ca / o.F) : "—"; }));
     h += line("Par hectare et par an", O.map(function (o) { return o.F > 0 && o.ha > 0 ? (o.ca / o.F / o.ha).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) + " €" : "—"; }));
     h += sec("Charges");
     CATS.concat(["Amortissements"]).forEach(function (cat) {
       if (cat === "Investissements") return;
-      h += line(cat, R.map(function (r) { return eur(r.byCat[cat] || 0); }));
+      h += line(cat + (cat === "Amortissements" ? " " + info("r:amort") : ""), R.map(function (r) { return eur(r.byCat[cat] || 0); }));
     });
     h += line("Intérêts d’emprunt", R.map(function (r) { return eur(r.interet); }));
     h += line("Total des charges", R.map(function (r) { return eur(r.charges); }), "pa-strong");
     h += sec("Résultat");
     h += line("Résultat avant impôt", R.map(function (r) { return '<span class="' + cls(r.rai) + '">' + eur(r.rai) + "</span>"; }));
-    h += line("Impôt sur les sociétés", R.map(function (r) { return eur(r.is); }));
+    h += line("Impôt sur les sociétés " + info("r:is"), R.map(function (r) { return eur(r.is); }));
     h += line("Résultat net", R.map(function (r) { return '<span class="' + cls(r.net) + '">' + eur(r.net) + "</span>"; }), "pa-strong");
-    h += line("Seuil de rentabilité", R.map(function (r) { return isFinite(r.seuil) ? eur(r.seuil) : "non atteint"; }));
-    h += line("Point mort", R.map(function (r) { return r.pointMort === null ? "non atteint" : Math.round(r.pointMort) + " jours"; }));
+    h += line("Seuil de rentabilité " + info("r:seuil"), R.map(function (r) { return isFinite(r.seuil) ? eur(r.seuil) : "non atteint"; }));
+    h += line("Point mort " + info("r:pm"), R.map(function (r) { return r.pointMort === null ? "non atteint" : Math.round(r.pointMort) + " jours"; }));
     h += sec("Trésorerie");
     h += line("Investissements payés", R.map(function (r) { return eur(r.invest); }));
     h += line("Remboursement des prêts", R.map(function (r) { return eur(r.rembourse); }));
-    h += line("Factures pas encore payées en fin d’année (BFR)", R.map(function (r) { return eur(r.bfr); }));
+    h += line("Factures pas encore payées en fin d’année (BFR) " + info("r:bfr"), R.map(function (r) { return eur(r.bfr); }));
     h += line("Point bas dans l’année", R.map(function (r) { return '<span class="' + cls(r.minM) + '">' + eur(r.minM) + "</span>"; }));
     h += line("Trésorerie en fin d’année", R.map(function (r) { return '<span class="' + cls(r.tresor) + '">' + eur(r.tresor) + "</span>"; }), "pa-strong");
     document.getElementById("pa-res-table").innerHTML = h + "</tbody>";
@@ -5425,7 +5527,10 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     save(); updateComputed();
   }
   function onClick(e) {
-    var t = e.target.closest("button"); if (!t) return;
+    var t = e.target.closest("button");
+    if (pop && popFor && !e.target.closest(".pa-pop") && t !== popFor) closePop();
+    if (!t) return;
+    if (t.hasAttribute("data-info")) { if (popFor === t && popPinned) closePop(); else openPop(t, true); return; }
     if (t.id === "pa-launch") return open(true);
     if (t.hasAttribute("data-tab")) return tab(t.getAttribute("data-tab"));
     if (t.hasAttribute("data-scen")) { state.scenario = t.getAttribute("data-scen"); save(); renderRev(); updateComputed(); return; }
@@ -5480,6 +5585,17 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var root = document.getElementById("pa-root");
     root.addEventListener("input", onInput);
     root.addEventListener("click", onClick);
+    root.addEventListener("pointerover", function (e) {
+      var b = e.target.closest && e.target.closest(".pa-i");
+      if (b && e.pointerType === "mouse" && !popPinned) openPop(b, false);
+    });
+    root.addEventListener("pointerout", function (e) {
+      var b = e.target.closest && e.target.closest(".pa-i");
+      if (b && e.pointerType === "mouse" && !popPinned) schedClose();
+    });
+    root.addEventListener("focusin", function (e) { if (e.target.classList && e.target.classList.contains("pa-i") && !popPinned) openPop(e.target, false); });
+    root.addEventListener("focusout", function (e) { if (e.target.classList && e.target.classList.contains("pa-i") && !popPinned) schedClose(); });
+    document.querySelector("#pa-overlay .pa-body").addEventListener("scroll", function () { closePop(); hideTip(); }, { passive: true });
     document.getElementById("pa-file").addEventListener("change", function (e) {
       var file = e.target.files[0]; if (!file) return;
       file.text().then(function (txt) {
@@ -5488,7 +5604,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
         e.target.value = "";
       });
     });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.getElementById("pa-overlay").classList.contains("pa-open")) open(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.getElementById("pa-overlay").classList.contains("pa-open")) { if (popFor) closePop(); else open(false); } });
     renderAll();
     try { var t = sessionStorage.getItem(KEY + "-tab"); if (t) tab(t); } catch (e) {}
     if (location.hash === "#plan-affaires") open(true);
