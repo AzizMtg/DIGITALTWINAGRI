@@ -4798,6 +4798,27 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
 .pa-kpi span{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
 .pa-note{font-size:12px;color:var(--pa-mute);margin:8px 0 0}
 .pa-warn{border:1px solid #6b5d33;background:#1d1a10;color:var(--pa-wheat);border-radius:10px;padding:10px 12px;font-size:13px;margin:0 0 14px}
+.pa-scen{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 14px}
+.pa-scen-l{font-size:12px;font-weight:600;color:var(--pa-mute);margin-right:4px}
+.pa-scen-n{font-size:12px;color:var(--pa-mute);margin-left:8px}
+.pa-seg,.pa-month{border:1px solid var(--pa-line);background:var(--pa-panel);color:var(--pa-soft);padding:6px 12px;border-radius:8px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.pa-seg[aria-pressed="true"],.pa-month[aria-pressed="true"]{border-color:var(--pa-wheat2);color:var(--pa-wheat);background:#1d1a10}
+.pa-months{display:flex;flex-wrap:wrap;gap:6px}
+.pa-month{padding:5px 10px;font-size:12px}
+.pa-chart{background:var(--pa-panel);border:1px solid var(--pa-line);border-radius:10px;padding:12px 14px;margin-bottom:6px}
+.pa-chart h3{margin:0 0 6px;font-size:14px}
+.pa-chart svg{width:100%;height:auto;display:block}
+.pa-legend{display:flex;gap:16px;font-size:12px;color:var(--pa-soft);margin-bottom:4px}
+.pa-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.pa-grid{stroke:#26332a;stroke-width:1}
+.pa-base{stroke:#5f6a61;stroke-width:1}
+.pa-cross{stroke:#7f897f;stroke-width:1}
+.pa-ax{fill:#7f897f;font:11px Inter,system-ui,sans-serif}
+.pa-val{fill:#c9cbc0;font:600 11px Inter,system-ui,sans-serif}
+.pa-tip{position:fixed;z-index:2147483002;display:none;pointer-events:none;background:#1b2620;border:1px solid #3a4a3f;border-radius:8px;padding:8px 10px;font:12px Inter,system-ui,sans-serif;color:#e7e5dc;box-shadow:0 6px 20px rgba(0,0,0,.4);line-height:1.5}
+#pa-month-table{min-width:1150px}
+.pa-cols>div>.pa-h2:first-child{margin-top:26px}
+#pa-cmp-table{min-width:640px}
 @media(max-width:640px){.pa-body{padding:16px}.pa-head{padding:12px 16px}.pa-tabs{padding:0 8px}}
 </style>
 <div id="pa-root">
@@ -4878,12 +4899,28 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
 
       <!-- Onglet 3 : revenus et résultat -->
       <section class="pa-pane" data-pane="revenus">
+        <div class="pa-scen" role="radiogroup" aria-label="Scénario">
+          <span class="pa-scen-l">Scénario</span>
+          <button type="button" class="pa-seg" data-scen="prudent">Prudent</button>
+          <button type="button" class="pa-seg" data-scen="central">Central</button>
+          <button type="button" class="pa-seg" data-scen="optimiste">Optimiste</button>
+          <span class="pa-scen-n">Les hypothèses ci-dessous modifient le scénario choisi ; les coûts sont communs aux trois.</span>
+        </div>
         <div class="pa-kpis" id="pa-kpis"></div>
         <div id="pa-warns"></div>
+        <div class="pa-cols">
+          <div class="pa-chart"><h3>Chiffre d’affaires et charges par année</h3><div id="pa-chart-years"></div></div>
+          <div class="pa-chart"><h3>Trésorerie en fin de mois, sur 36 mois</h3><div id="pa-chart-cash"></div></div>
+        </div>
+        <h2 class="pa-h2">Comparer les scénarios</h2>
+        <div class="pa-tablebox"><table class="pa-t" id="pa-cmp-table"></table></div>
         <div class="pa-cols">
           <div>
             <h2 class="pa-h2">Hypothèses de vente et d’activité</h2>
             <div class="pa-tablebox"><table class="pa-t" id="pa-rev-table"></table></div>
+            <h2 class="pa-h2">Mois de vol</h2>
+            <div class="pa-months" id="pa-months"></div>
+            <p class="pa-note">Les vols, les kilomètres, les repas et la formule ponctuelle tombent sur les mois cochés. Les abonnements et les capteurs sont facturés chaque mois, toute l’année.</p>
             <h2 class="pa-h2">Financement de départ</h2>
             <div class="pa-tablebox"><table class="pa-t" id="pa-fin-table"></table></div>
             <p class="pa-note">« = » recopie la valeur de A1 sur A2 et A3.</p>
@@ -4891,9 +4928,13 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
           <div>
             <h2 class="pa-h2">Prévisionnel sur 3 ans</h2>
             <div class="pa-tablebox"><table class="pa-t" id="pa-res-table"></table></div>
-            <p class="pa-note">Calcul simplifié, proche de l’Excel du cours mais pas identique : IS à 15 % jusqu’à 42 500 € puis 25 %, déficits reportés ; BFR non modélisé (structures payées chaque mois) ; seuil de rentabilité = charges fixes ÷ taux de marge sur coûts variables.</p>
+            <p class="pa-note">Calcul simplifié, proche de l’Excel du cours mais pas identique : IS à 15 % jusqu’à 42 500 € puis 25 %, déficits reportés ; BFR = factures pas encore payées en fin d’année (délai de paiement) ; seuil de rentabilité = charges fixes ÷ taux de marge sur coûts variables.</p>
           </div>
         </div>
+        <h2 class="pa-h2">Trésorerie mois par mois</h2>
+        <div class="pa-scen"><span class="pa-scen-l">Année</span><button type="button" class="pa-seg" data-my="0">A1</button><button type="button" class="pa-seg" data-my="1">A2</button><button type="button" class="pa-seg" data-my="2">A3</button></div>
+        <div class="pa-tablebox"><table class="pa-t" id="pa-month-table"></table></div>
+        <p class="pa-note">Encaissements décalés du délai de paiement. Démarrage et investissements payés le premier mois de l’année, impôt en décembre, prêts remboursés chaque mois.</p>
       </section>
     </div></div>
   </div>
@@ -4903,6 +4944,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   "use strict";
   var KEY = "agritwin-plan-affaires-v1";
   var YEARS = ["A1", "A2", "A3"];
+  var MOIS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+  var SCEN = { prudent: "Prudent", central: "Central", optimiste: "Optimiste" };
   var KINDS = { invest: "Investissement", an: "€ par an", mois: "€ par mois", unite: "€ par unité" };
   var BASES = {
     fixe: "forfait", tech: "par technicien", structure: "par structure cliente",
@@ -4911,15 +4954,30 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     km: "par km", jour: "par jour de tournée"
   };
   var VARIABLE = { ferme: 1, fermeCapteur: 1, nouvFermeCapteur: 1, km: 1, jour: 1 };
+  var SEASONAL = { km: 1, jour: 1 };
   var CATS = ["Investissements", "Création et démarrage", "Personnel", "Véhicule et déplacements",
     "Drone et logiciels", "Assurances", "Gestion et administratif", "Commercial", "Capteurs"];
+  var C_CA = "#b8892a", C_CH = "#4a90d9", C_LINE = "#b9cdb0";
 
   function row(cat, poste, kind, base, prix, q, amort, source, url, date) {
     return { cat: cat, poste: poste, kind: kind, base: base, prix: prix, q: q, amort: amort || 0,
       source: source || "Estimation", url: url || "", date: date || "24/11/2026" };
   }
+  function revBase(o) {
+    var b = {
+      structures: [3, 6, 9], fermesParStructure: [4, 4, 4], ha: [80, 80, 80],
+      partAbo: [75, 75, 75], prixAbo: [60, 60, 60], volsAbo: [15, 15, 15],
+      prixPonct: [10, 10, 10], analysesPonct: [2, 2, 2], forfaitPonct: [30, 30, 30],
+      partCapteurs: [30, 30, 30], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
+      techniciens: [1, 2, 2], fermesParJour: [3, 3, 3], kmParJour: [150, 150, 150],
+      visites: [3, 3, 3], kmVisite: [70, 70, 70], joursDispo: [150, 150, 150], volable: [60, 60, 60],
+      delai: [30, 30, 30]
+    };
+    for (var k in o) b[k] = o[k];
+    return b;
+  }
   var DEFAULTS = {
-    v: 1,
+    v: 2,
     costs: [
       row("Investissements", "Drone DJI Mavic 3M (multispectral)", "invest", "fixe", 3800, [1, 0, 0], 3, "3 726 à 3 900 € HT selon revendeur", "https://www.flyingeye.fr", "17/11/2026"),
       row("Investissements", "Kit 3 batteries + hub de charge 100 W", "invest", "fixe", 412.5, [1, 0, 1], 2, "Flyingeye, 495 € TTC", "https://www.flyingeye.fr/fr/products/accessoires/dji-batterie-kit-mavic-3-enterprise"),
@@ -4931,7 +4989,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       row("Création et démarrage", "Rédaction des statuts (avocat ou plateforme)", "an", "fixe", 800, [1, 0, 0], 0, "Estimation, à confirmer par devis"),
       row("Création et démarrage", "Formation télépilote (CATS + pratique STS + MANEX)", "an", "tech", 1480, [1, 0, 0], 0, "Minute Drone ; 950 à 2 430 € selon l’organisme", "https://minutedrone.com/formation/tarif-formation-telepilote-drone"),
       row("Création et démarrage", "Enregistrement exploitant AlphaTango", "an", "fixe", 0, [1, 0, 0], 0, "Gratuit (DGAC)"),
-      row("Personnel", "Technicien télépilote (coût employeur, SMIC)", "mois", "tech", 2100, [1, 1, 1], 0, "SMIC 1 867,02 € brut/mois depuis le 01/06/2026 ; coût employeur avec réduction générale ≈ 2 000 à 2 200 € (simuler sur l’Urssaf)", "https://mon-entreprise.urssaf.fr", "17/11/2026"),
+      row("Personnel", "Technicien télépilote (coût employeur, SMIC)", "mois", "tech", 1987.76, [1, 1, 1], 0, "Simulateur Urssaf : SMIC 1 867,02 € brut, net 1 455,99 €, réduction générale comprise", "https://mon-entreprise.urssaf.fr", "24/11/2026"),
       row("Personnel", "Mutuelle d’entreprise (part employeur)", "mois", "tech", 27, [1, 1, 1], 0, "45 à 65 €/mois par salarié, 50 % minimum à l’employeur", "https://direct-mutuelle-groupe.com/tarif-moyen-mutuelle-collective.php"),
       row("Personnel", "Médecine du travail", "an", "tech", 110, [1, 1, 1], 0, "Estimation"),
       row("Personnel", "Rémunération du dirigeant", "mois", "fixe", 0, [1, 1, 1], 0, "Choix : 0 € tant que l’activité démarre"),
@@ -4954,14 +5012,13 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       row("Capteurs", "Sondes de sol (option capteurs)", "invest", "nouvFermeCapteur", 350, [3, 3, 3], 3, "Weenat, sonde capacitive 350 €", "https://weenat.com", "17/11/2026"),
       row("Capteurs", "Abonnement aux données des sondes", "mois", "fermeCapteur", 16.5, [1, 1, 1], 0, "Weenat 16,50 à 50 €/mois", "https://weenat.com", "17/11/2026")
     ],
-    rev: {
-      structures: [3, 6, 9], fermesParStructure: [4, 4, 4], ha: [80, 80, 80],
-      partAbo: [75, 75, 75], prixAbo: [60, 60, 60], volsAbo: [15, 15, 15],
-      prixPonct: [10, 10, 10], analysesPonct: [2, 2, 2], forfaitPonct: [30, 30, 30],
-      partCapteurs: [30, 30, 30], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
-      techniciens: [1, 1, 1], fermesParJour: [3, 3, 3], kmParJour: [150, 150, 150],
-      visites: [3, 3, 3], kmVisite: [70, 70, 70], joursDispo: [150, 150, 150]
+    scenario: "central",
+    revs: {
+      prudent: revBase({ structures: [2, 3, 5], partCapteurs: [20, 20, 20], techniciens: [1, 1, 1], delai: [45, 45, 45] }),
+      central: revBase({}),
+      optimiste: revBase({ structures: [4, 8, 12], partCapteurs: [40, 40, 40], techniciens: [1, 2, 3] })
     },
+    saison: [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
     fin: { apport: 6000, pret: 10300, taux: 4.5, duree: 5, honneur: 8000, dureeHonneur: 5, subvention: 0 }
   };
   var REV_ROWS = [
@@ -4979,13 +5036,15 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     ["partCapteurs", "Abonnés qui prennent l’option capteurs", "%"],
     ["prixCapteurs", "Option capteurs", "€/ha/an"],
     ["remise", "Remise accordée aux structures", "%"],
+    ["delai", "Délai de paiement des structures", "jours"],
     ["Activité", null],
     ["techniciens", "Techniciens (et fourgonnettes)", ""],
     ["fermesParJour", "Fermes survolées par jour de tournée", ""],
     ["kmParJour", "Km par jour de tournée", "km"],
     ["visites", "Visites commerciales par nouvelle structure", ""],
     ["kmVisite", "Km par visite commerciale", "km"],
-    ["joursDispo", "Jours de vol possibles par technicien et par an", "j"]
+    ["joursDispo", "Jours ouvrés de la saison de vol, par technicien", "j"],
+    ["volable", "Part de ces jours où la météo permet de voler", "%"]
   ];
   var FIN_ROWS = [
     ["apport", "Apport des associés", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
@@ -4993,12 +5052,31 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     ["dureeHonneur", "Durée des prêts d’honneur", "ans"], ["subvention", "Subventions", "€"]
   ];
 
-  var state, savedAt = null;
+  var state, savedAt = null, monthYear = 0;
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function migrate(s) {
+    if (!s || !s.costs || !s.fin) return null;
+    if (!s.revs) { var d = clone(DEFAULTS.revs); if (s.rev) d.central = s.rev; s.revs = d; delete s.rev; }
+    Object.keys(SCEN).forEach(function (k) {
+      var base = DEFAULTS.revs[k];
+      if (!s.revs[k]) s.revs[k] = clone(base);
+      Object.keys(base).forEach(function (p) { if (!s.revs[k][p]) s.revs[k][p] = base[p].slice(); });
+    });
+    if (!SCEN[s.scenario]) s.scenario = "central";
+    if (!s.saison || s.saison.length !== 12) s.saison = DEFAULTS.saison.slice();
+    s.costs.forEach(function (c) {
+      if (c.poste === "Technicien télépilote (coût employeur, SMIC)" && c.prix === 2100 && c.source.indexOf("modifié") === -1) {
+        var dc = DEFAULTS.costs.filter(function (x) { return x.poste === c.poste; })[0];
+        if (dc) { c.prix = dc.prix; c.source = dc.source; c.url = dc.url; c.date = dc.date; }
+      }
+    });
+    s.v = 2;
+    return s;
+  }
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
-      if (raw) { var s = JSON.parse(raw); if (s && s.costs && s.rev && s.fin) { savedAt = s.savedAt || null; return s; } }
+      if (raw) { var s = migrate(JSON.parse(raw)); if (s) { savedAt = s.savedAt || null; return s; } }
     } catch (e) {}
     return clone(DEFAULTS);
   }
@@ -5009,18 +5087,22 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     status();
   }
   function status() {
-    var el = document.getElementById("pa-status");
-    el.textContent = savedAt
+    document.getElementById("pa-status").textContent = savedAt
       ? "Vos modifications sont enregistrées dans ce navigateur (dernière le " + savedAt + "). « Exporter » pour les garder dans un fichier ou les partager."
       : "Valeurs d’origine (sources du 17 et du 24/11/2026). Vos modifications seront enregistrées dans ce navigateur.";
   }
   function num(v) { var n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : 0; }
   function eur(n) { return (Math.round(n)).toLocaleString("fr-FR") + " €"; }
+  function keur(n) { return Math.abs(n) >= 1000 ? (Math.round(n / 100) / 10).toLocaleString("fr-FR") + " k€" : Math.round(n) + " €"; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function rev() { return state.revs[state.scenario]; }
 
   /* ---------- Calcul ---------- */
-  function compute() {
-    var r = state.rev, f = state.fin, ops = [], i, y;
+  function compute(r) {
+    var f = state.fin, ops = [], y, m;
+    var on = state.saison.map(function (v) { return v ? 1 : 0; });
+    var nOn = on.reduce(function (a, b) { return a + b; }, 0);
+    var wSeason = on.map(function (v) { return nOn ? v / nOn : 1 / 12; });
     var prevS = 0, prevFC = 0;
     for (y = 0; y < 3; y++) {
       var S = num(r.structures[y]), F = Math.round(S * num(r.fermesParStructure[y]));
@@ -5033,16 +5115,20 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       var jours = num(r.fermesParJour[y]) > 0 ? vols / num(r.fermesParJour[y]) : 0;
       var km = jours * num(r.kmParJour[y]) + nS * num(r.visites[y]) * num(r.kmVisite[y]);
       var tech = num(r.techniciens[y]);
+      var capa = num(r.joursDispo[y]) * num(r.volable[y]) / 100;
       var caAbo = fa * ha * num(r.prixAbo[y]);
       var caPonct = fp * (ha * num(r.prixPonct[y]) + num(r.forfaitPonct[y])) * num(r.analysesPonct[y]);
       var caCapt = fc * ha * num(r.prixCapteurs[y]);
-      var brut = caAbo + caPonct + caCapt, remise = brut * num(r.remise[y]) / 100;
-      ops.push({ S: S, F: F, fa: fa, fp: fp, fc: fc, vols: vols, jours: jours, km: km, tech: tech,
-        occ: tech > 0 ? jours / (num(r.joursDispo[y]) * tech) : Infinity,
-        caAbo: caAbo, caPonct: caPonct, caCapt: caCapt, remise: remise, ca: brut - remise,
+      var brut = caAbo + caPonct + caCapt, rem = num(r.remise[y]) / 100;
+      var bill = [];
+      for (m = 0; m < 12; m++) bill.push(((caAbo + caCapt) / 12 + caPonct * wSeason[m]) * (1 - rem));
+      ops.push({ S: S, F: F, fa: fa, fp: fp, fc: fc, ha: ha, vols: vols, jours: jours, km: km, tech: tech,
+        occ: tech > 0 && capa > 0 ? jours / (capa * tech) : Infinity,
+        besoin: capa > 0 ? Math.max(1, Math.ceil(jours / capa - 1e-9)) : Infinity,
+        caAbo: caAbo, caPonct: caPonct, caCapt: caCapt, remise: brut * rem, ca: brut * (1 - rem), bill: bill,
+        delaiM: Math.min(12, Math.max(0, Math.round(num(r.delai[y]) / 30))),
         base: { fixe: 1, tech: tech, structure: S, nouvStructure: nS, ferme: F, fermeCapteur: fc, nouvFermeCapteur: nFC, km: km, jour: jours } });
     }
-    // Coûts ligne par ligne
     var lines = state.costs.map(function (c) {
       var mult = c.kind === "mois" ? 12 : 1, amounts = [];
       for (y = 0; y < 3; y++) amounts.push(num(c.prix) * mult * num(c.q[y]) * (ops[y].base[c.base] || 0));
@@ -5053,39 +5139,54 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       }
       return { c: c, amounts: amounts, amort: amort };
     });
-    // Prêt bancaire (annuités constantes) et prêts d'honneur
     var P = num(f.pret), t = num(f.taux) / 100, n = Math.max(1, Math.round(num(f.duree)));
     var annuite = t > 0 ? P * t / (1 - Math.pow(1 + t, -n)) : P / n, solde = P;
     var dh = Math.max(1, Math.round(num(f.dureeHonneur)));
-    var res = [], tresor = num(f.apport) + P + num(f.honneur) + num(f.subvention), deficit = 0;
+    var start = num(f.apport) + P + num(f.honneur) + num(f.subvention);
+    var res = [], tresor = start, deficit = 0, prevBFR = 0, months = [], prevBill = null;
     for (y = 0; y < 3; y++) {
-      var o = ops[y], byCat = {}, fixes = 0, vars = 0, invest = 0, amortT = 0;
+      var o = ops[y], byCat = {}, fixes = 0, vars = 0, invest = 0, amortT = 0, outM = [];
+      for (m = 0; m < 12; m++) outM.push(0);
       lines.forEach(function (L) {
-        if (L.c.kind === "invest") { invest += L.amounts[y]; amortT += L.amort[y]; byCat["Amortissements"] = (byCat["Amortissements"] || 0) + L.amort[y]; return; }
-        byCat[L.c.cat] = (byCat[L.c.cat] || 0) + L.amounts[y];
-        if (VARIABLE[L.c.base]) vars += L.amounts[y]; else fixes += L.amounts[y];
+        var a = L.amounts[y];
+        if (L.c.kind === "invest") { invest += a; amortT += L.amort[y]; byCat["Amortissements"] = (byCat["Amortissements"] || 0) + L.amort[y]; outM[0] += a; return; }
+        byCat[L.c.cat] = (byCat[L.c.cat] || 0) + a;
+        if (VARIABLE[L.c.base]) vars += a; else fixes += a;
+        if (L.c.cat === "Création et démarrage") outM[0] += a;
+        else if (SEASONAL[L.c.base]) for (m = 0; m < 12; m++) outM[m] += a * wSeason[m];
+        else for (m = 0; m < 12; m++) outM[m] += a / 12;
       });
       var interet = y < n ? solde * t : 0, capital = y < n ? Math.min(solde, annuite - interet) : 0;
       solde -= capital;
       var capHonneur = y < dh ? num(f.honneur) / dh : 0;
+      for (m = 0; m < 12; m++) outM[m] += (interet + capital + capHonneur) / 12;
       fixes += amortT + interet;
       var charges = fixes + vars;
       var rai = o.ca - charges, is = 0;
       if (rai < 0) deficit += -rai;
-      else { var base = Math.max(0, rai - deficit); deficit = Math.max(0, deficit - rai); is = 0.15 * Math.min(base, 42500) + 0.25 * Math.max(0, base - 42500); }
-      var net = rai - is;
-      var taux = o.ca > 0 ? (o.ca - vars) / o.ca : 0;
-      var seuil = taux > 0 ? fixes / taux : Infinity;
-      tresor += net + amortT - invest - capital - capHonneur;
+      else { var b = Math.max(0, rai - deficit); deficit = Math.max(0, deficit - rai); is = 0.15 * Math.min(b, 42500) + 0.25 * Math.max(0, b - 42500); }
+      outM[11] += is;
+      var net = rai - is, taux = o.ca > 0 ? (o.ca - vars) / o.ca : 0, seuil = taux > 0 ? fixes / taux : Infinity;
+      var d = o.delaiM, inM = [], bfr = 0;
+      for (m = 0; m < 12; m++) inM.push(m >= d ? o.bill[m - d] : (prevBill ? prevBill.bill[12 + m - d] : 0));
+      for (m = 12 - d; m < 12; m++) bfr += o.bill[m];
+      // si le délai change d'une année à l'autre, les factures en attente de l'an passé arrivent quand même
+      if (prevBill && prevBill.delaiM > d) for (m = 12 - prevBill.delaiM; m < 12 - d; m++) inM[0] += prevBill.bill[m];
+      var cash = tresor, minM = Infinity, endM = [];
+      for (m = 0; m < 12; m++) { cash += inM[m] - outM[m]; endM.push(cash); if (cash < minM) minM = cash; }
+      tresor += net + amortT - invest - capital - capHonneur - (bfr - prevBFR);
+      months.push({ inM: inM, outM: outM, endM: endM, startCash: res.length ? res[res.length - 1].tresor : start });
       res.push({ byCat: byCat, fixes: fixes, vars: vars, invest: invest, amort: amortT, interet: interet, charges: charges,
         rai: rai, is: is, net: net, seuil: seuil, pointMort: o.ca > 0 && seuil <= o.ca ? seuil / o.ca * 365 : null,
-        tresor: tresor, rembourse: capital + capHonneur });
+        tresor: tresor, rembourse: capital + capHonneur, bfr: bfr, dBfr: bfr - prevBFR, minM: minM });
+      prevBFR = bfr; prevBill = o;
     }
-    return { ops: ops, lines: lines, res: res };
+    return { ops: ops, lines: lines, res: res, months: months, start: start };
   }
 
   /* ---------- Onglet Coûts ---------- */
   function opt(map, sel) { return Object.keys(map).map(function (k) { return '<option value="' + k + '"' + (k === sel ? " selected" : "") + ">" + esc(map[k]) + "</option>"; }).join(""); }
+  function srcHtml(c) { return (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source) + "</a>" : esc(c.source)) + "<br>" + esc(c.date); }
   function renderCosts() {
     var html = '<thead><tr><th>Poste</th><th>Type</th><th>Base</th><th class="pa-num">Prix HT</th>' +
       YEARS.map(function (a) { return '<th class="pa-num">Qté ' + a + "</th>"; }).join("") +
@@ -5096,30 +5197,30 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       state.costs.forEach(function (c, i) {
         if (c.cat !== cat) return;
         html += '<tr data-i="' + i + '">' +
-          '<td style="min-width:230px"><input data-f="poste" value="' + esc(c.poste) + '"></td>' +
+          '<td><input data-f="poste" value="' + esc(c.poste) + '"></td>' +
           '<td><select data-f="kind">' + opt(KINDS, c.kind) + "</select></td>" +
           '<td><select data-f="base">' + opt(BASES, c.base) + "</select></td>" +
           '<td class="pa-num"><input type="number" step="any" data-f="prix" value="' + c.prix + '"></td>' +
           [0, 1, 2].map(function (y) { return '<td class="pa-num"><input type="number" step="any" data-f="q" data-y="' + y + '" value="' + c.q[y] + '"></td>'; }).join("") +
           '<td class="pa-num"><input type="number" step="1" min="0" data-f="amort" value="' + (c.amort || "") + '"' + (c.kind === "invest" ? "" : " disabled placeholder=\"—\"") + "></td>" +
           [0, 1, 2].map(function (y) { return '<td class="pa-num" data-tot="' + i + "-" + y + '"></td>'; }).join("") +
-          '<td class="pa-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source) + "</a>" : esc(c.source)) + "<br>" + esc(c.date) + "</td>" +
+          '<td class="pa-src">' + srcHtml(c) + "</td>" +
           '<td><button class="pa-del" type="button" data-del="' + i + '" title="Supprimer la ligne">×</button></td></tr>';
       });
       html += '<tr class="pa-sub"><td colspan="8">Sous-total ' + esc(cat) + "</td>" +
         [0, 1, 2].map(function (y) { return '<td class="pa-num" data-sub="' + esc(cat) + "|" + y + '"></td>'; }).join("") + "<td colspan=\"2\"></td></tr>";
     });
-    html += "</tbody>";
-    document.getElementById("pa-cost-table").innerHTML = html;
+    document.getElementById("pa-cost-table").innerHTML = html + "</tbody>";
   }
 
-  /* ---------- Onglet Revenus ---------- */
+  /* ---------- Onglet Revenus : saisies ---------- */
   function renderRev() {
-    var html = '<thead><tr><th>Hypothèse</th><th>Unité</th>' + YEARS.map(function (a) { return '<th class="pa-num">' + a + "</th>"; }).join("") + "<th></th></tr></thead><tbody>";
+    var r = rev();
+    var html = '<thead><tr><th>Hypothèse (' + SCEN[state.scenario] + ')</th><th>Unité</th>' + YEARS.map(function (a) { return '<th class="pa-num">' + a + "</th>"; }).join("") + "<th></th></tr></thead><tbody>";
     REV_ROWS.forEach(function (R) {
       if (R[1] === null) { html += '<tr class="pa-cat"><td colspan="6">' + R[0] + "</td></tr>"; return; }
       html += "<tr><td>" + R[1] + '</td><td style="color:var(--pa-mute);white-space:nowrap">' + R[2] + "</td>" +
-        [0, 1, 2].map(function (y) { return '<td class="pa-num"><input type="number" step="any" data-rev="' + R[0] + '" data-y="' + y + '" value="' + state.rev[R[0]][y] + '"></td>'; }).join("") +
+        [0, 1, 2].map(function (y) { return '<td class="pa-num"><input type="number" step="any" data-rev="' + R[0] + '" data-y="' + y + '" value="' + r[R[0]][y] + '"></td>'; }).join("") +
         '<td><button class="pa-btn pa-mini" type="button" data-copy="' + R[0] + '" title="Recopier A1 sur A2 et A3">=</button></td></tr>';
     });
     document.getElementById("pa-rev-table").innerHTML = html + "</tbody>";
@@ -5128,12 +5229,92 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       fh += "<tr><td>" + R[1] + '</td><td style="color:var(--pa-mute)">' + R[2] + '</td><td class="pa-num" style="width:140px"><input type="number" step="any" data-fin="' + R[0] + '" value="' + state.fin[R[0]] + '"></td></tr>';
     });
     document.getElementById("pa-fin-table").innerHTML = fh + "</tbody>";
+    document.getElementById("pa-months").innerHTML = MOIS.map(function (lab, m) {
+      return '<button type="button" class="pa-month" data-month="' + m + '" aria-pressed="' + (state.saison[m] ? "true" : "false") + '">' + lab + "</button>";
+    }).join("");
+    Array.prototype.forEach.call(document.querySelectorAll("[data-scen]"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-scen") === state.scenario ? "true" : "false"); });
   }
 
+  /* ---------- Graphiques (SVG) ---------- */
+  var tip;
+  function showTip(e, html) {
+    if (!tip) { tip = document.createElement("div"); tip.className = "pa-tip"; document.getElementById("pa-overlay").appendChild(tip); }
+    tip.innerHTML = html; tip.style.display = "block";
+    var x = e.clientX + 14, yy = e.clientY + 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > window.innerWidth - 8) x = e.clientX - w - 14;
+    if (yy + h > window.innerHeight - 8) yy = e.clientY - h - 14;
+    tip.style.left = x + "px"; tip.style.top = yy + "px";
+  }
+  function hideTip() { if (tip) tip.style.display = "none"; }
+  function niceMax(v) { if (v <= 0) return 1; var p = Math.pow(10, Math.floor(Math.log10(v))), s = v / p; return (s <= 1 ? 1 : s <= 2 ? 2 : s <= 5 ? 5 : 10) * p; }
+  function chartYears(C) {
+    var W = 560, H = 260, L = 52, R = 12, T = 16, B = 30;
+    var data = C.ops.map(function (o, y) { return { ca: o.ca, ch: C.res[y].charges, net: C.res[y].net }; });
+    var max = niceMax(Math.max.apply(null, data.map(function (d) { return Math.max(d.ca, d.ch); })));
+    var ph = H - T - B, pw = W - L - R, gw = pw / 3, bw = Math.min(46, gw * 0.3);
+    var sy = function (v) { return T + ph - v / max * ph; };
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Chiffre d’affaires et charges par année">';
+    for (var k = 0; k <= 4; k++) { var v = max * k / 4, yy = sy(v); s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" class="pa-grid"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" class="pa-ax" text-anchor="end">' + keur(v) + "</text>"; }
+    data.forEach(function (d, y) {
+      var cx = L + gw * y + gw / 2;
+      [[d.ca, C_CA, cx - bw - 1, "Chiffre d’affaires"], [d.ch, C_CH, cx + 1, "Charges"]].forEach(function (b) {
+        var top = sy(b[0]), h = Math.max(0, T + ph - top), r = Math.min(4, h);
+        s += '<path d="M' + b[2] + "," + (T + ph) + "V" + (top + r) + "q0,-" + r + " " + r + ",-" + r + "H" + (b[2] + bw - r) + "q" + r + ",0 " + r + "," + r + "V" + (T + ph) + 'Z" fill="' + b[1] + '"/>';
+        s += '<text x="' + (b[2] + bw / 2) + '" y="' + (top - 5) + '" class="pa-val" text-anchor="middle">' + keur(b[0]) + "</text>";
+      });
+      s += '<rect x="' + (L + gw * y) + '" y="' + T + '" width="' + gw + '" height="' + ph + '" fill="transparent" data-hy="' + y + '"/>';
+      s += '<text x="' + cx + '" y="' + (H - 9) + '" class="pa-ax" text-anchor="middle">' + YEARS[y] + "</text>";
+    });
+    s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '" class="pa-base"/></svg>';
+    var el = document.getElementById("pa-chart-years");
+    el.innerHTML = '<div class="pa-legend"><span><i style="background:' + C_CA + '"></i>Chiffre d’affaires</span><span><i style="background:' + C_CH + '"></i>Charges</span></div>' + s;
+    Array.prototype.forEach.call(el.querySelectorAll("[data-hy]"), function (r) {
+      var y = +r.getAttribute("data-hy"), d = data[y];
+      r.addEventListener("mousemove", function (e) { showTip(e, "<b>" + YEARS[y] + "</b><br>Chiffre d’affaires : " + eur(d.ca) + "<br>Charges : " + eur(d.ch) + "<br>Résultat net : " + eur(d.net)); });
+      r.addEventListener("mouseleave", hideTip);
+    });
+  }
+  function chartCash(C) {
+    var W = 560, H = 260, L = 56, R = 12, T = 16, B = 30, pts = [];
+    pts.push({ v: C.start, lab: "Départ" });
+    C.months.forEach(function (M, y) { M.endM.forEach(function (v, m) { pts.push({ v: v, lab: MOIS[m] + " " + YEARS[y] }); }); });
+    var lo = Math.min(0, Math.min.apply(null, pts.map(function (p) { return p.v; })));
+    var hi = Math.max(0, Math.max.apply(null, pts.map(function (p) { return p.v; })));
+    var span = niceMax(hi - lo || 1), step = span / 4;
+    lo = Math.floor(lo / step) * step; hi = Math.max(lo + span, Math.ceil(hi / step) * step);
+    var pw = W - L - R, ph = H - T - B;
+    var sx = function (i) { return L + i / (pts.length - 1) * pw; }, sy = function (v) { return T + (hi - v) / (hi - lo) * ph; };
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Trésorerie en fin de mois">';
+    for (var v = lo; v <= hi + 1e-6; v += step) { var yy = sy(v); s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" class="' + (Math.abs(v) < 1e-6 ? "pa-base" : "pa-grid") + '"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" class="pa-ax" text-anchor="end">' + keur(v) + "</text>"; }
+    [12, 24].forEach(function (i) { s += '<line x1="' + sx(i) + '" x2="' + sx(i) + '" y1="' + T + '" y2="' + (T + ph) + '" class="pa-grid" stroke-dasharray="3 3"/>'; });
+    YEARS.forEach(function (a, y) { s += '<text x="' + sx(y * 12 + 6.5) + '" y="' + (H - 9) + '" class="pa-ax" text-anchor="middle">' + a + "</text>"; });
+    s += '<polyline fill="none" stroke="' + C_LINE + '" stroke-width="2" stroke-linejoin="round" points="' + pts.map(function (p, i) { return sx(i) + "," + sy(p.v); }).join(" ") + '"/>';
+    var iMin = 1; for (var i = 1; i < pts.length; i++) if (pts[i].v < pts[iMin].v) iMin = i;
+    s += '<circle cx="' + sx(iMin) + '" cy="' + sy(pts[iMin].v) + '" r="4.5" fill="' + (pts[iMin].v < 0 ? "#e59a8c" : C_LINE) + '" stroke="#111813" stroke-width="2"/>';
+    s += '<text x="' + Math.min(sx(iMin) + 8, W - R - 4) + '" y="' + (sy(pts[iMin].v) + (sy(pts[iMin].v) > T + ph - 20 ? -10 : 16)) + '" class="pa-val" text-anchor="' + (sx(iMin) > W - 140 ? "end" : "start") + '">Point bas : ' + keur(pts[iMin].v) + " (" + pts[iMin].lab + ")</text>";
+    s += '<line id="pa-cross" x1="0" x2="0" y1="' + T + '" y2="' + (T + ph) + '" class="pa-cross" style="display:none"/><circle id="pa-crossdot" r="4" fill="' + C_LINE + '" stroke="#111813" stroke-width="2" style="display:none"/>';
+    s += '<rect id="pa-hit" x="' + L + '" y="' + T + '" width="' + pw + '" height="' + ph + '" fill="transparent"/></svg>';
+    var el = document.getElementById("pa-chart-cash");
+    el.innerHTML = s;
+    var svg = el.querySelector("svg"), hit = el.querySelector("#pa-hit"), cr = el.querySelector("#pa-cross"), dot = el.querySelector("#pa-crossdot");
+    hit.addEventListener("mousemove", function (e) {
+      var b = svg.getBoundingClientRect(), x = (e.clientX - b.left) / b.width * W;
+      var i = Math.max(0, Math.min(pts.length - 1, Math.round((x - L) / pw * (pts.length - 1))));
+      cr.setAttribute("x1", sx(i)); cr.setAttribute("x2", sx(i)); cr.style.display = "";
+      dot.setAttribute("cx", sx(i)); dot.setAttribute("cy", sy(pts[i].v)); dot.style.display = "";
+      showTip(e, "<b>" + pts[i].lab + "</b><br>Trésorerie : " + eur(pts[i].v));
+    });
+    hit.addEventListener("mouseleave", function () { cr.style.display = "none"; dot.style.display = "none"; hideTip(); });
+  }
+
+  /* ---------- Onglet Revenus : résultats ---------- */
   function cls(n) { return n < 0 ? "pa-neg" : "pa-pos"; }
+  function kpi(label, val, c) { return '<div class="pa-kpi"><b>' + esc(label) + '</b><span class="' + (c || "") + '">' + val + "</span></div>"; }
+  function line(label, vals, extra) {
+    return "<tr" + (extra ? ' class="' + extra + '"' : "") + "><td>" + label + "</td>" + vals.map(function (v) { return '<td class="pa-num">' + v + "</td>"; }).join("") + "</tr>";
+  }
   function updateComputed() {
-    var C = compute();
-    // Totaux des coûts
+    var C = compute(rev());
     var subs = {};
     C.lines.forEach(function (L, i) {
       for (var y = 0; y < 3; y++) {
@@ -5145,23 +5326,31 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     Array.prototype.forEach.call(document.querySelectorAll("[data-sub]"), function (td) { td.textContent = eur(subs[td.getAttribute("data-sub")] || 0); });
     var inv = C.res.reduce(function (s, r) { return s + r.invest; }, 0);
     document.getElementById("pa-cost-kpis").innerHTML =
-      kpi("Investissements sur 3 ans", eur(inv)) +
+      kpi("Investissements sur 3 ans (" + SCEN[state.scenario].toLowerCase() + ")", eur(inv)) +
       C.res.map(function (r, y) { return kpi("Charges " + YEARS[y] + " (hors amort.)", eur(r.charges - r.amort - r.interet)); }).join("");
-    // KPIs revenus
     var R = C.res, O = C.ops;
+    var minAll = Math.min.apply(null, R.map(function (r) { return r.minM; }));
     document.getElementById("pa-kpis").innerHTML =
       R.map(function (r, y) { return kpi("Résultat net " + YEARS[y], eur(r.net), cls(r.net)); }).join("") +
       kpi("Trésorerie fin A3", eur(R[2].tresor), cls(R[2].tresor)) +
-      kpi("CA " + YEARS[2], eur(O[2].ca));
-    // Alertes
+      kpi("Point bas de trésorerie", eur(minAll), cls(minAll));
     var w = [];
-    O.forEach(function (o, y) { if (o.occ > 1) w.push(YEARS[y] + " : les techniciens sont occupés à " + Math.round(o.occ * 100) + " %. Ajoutez un technicien ou espacez les vols."); });
-    R.forEach(function (r, y) { if (r.tresor < 0) w.push(YEARS[y] + " : trésorerie négative (" + eur(r.tresor) + "). Augmentez l’apport ou le prêt."); });
+    O.forEach(function (o, y) { if (o.occ > 1) w.push(YEARS[y] + " : il faut " + o.besoin + " technicien(s) pour " + Math.round(o.jours) + " jours de tournée (" + Math.round(o.occ * 100) + " % de la capacité actuelle). Ajoutez un technicien ou espacez les vols."); });
+    R.forEach(function (r, y) { if (r.minM < 0) w.push(YEARS[y] + " : la trésorerie passe sous zéro dans l’année (point bas " + eur(r.minM) + "). Augmentez l’apport ou le prêt."); });
+    var dir = state.costs.filter(function (c) { return c.cat === "Personnel" && /dirigeant/i.test(c.poste); });
+    if (dir.length && dir.every(function (c) { return !num(c.prix); })) w.push("Rémunération du dirigeant à 0 € : le cours la range parmi les oublis classiques. À justifier à l’oral ou à chiffrer dans « Coûts ».");
     document.getElementById("pa-warns").innerHTML = w.map(function (t) { return '<div class="pa-warn">' + esc(t) + "</div>"; }).join("");
-    // Tableau de résultat
-    function line(label, vals, extra) {
-      return "<tr" + (extra ? ' class="' + extra + '"' : "") + "><td>" + label + "</td>" + vals.map(function (v) { return '<td class="pa-num">' + v + "</td>"; }).join("") + "</tr>";
-    }
+    chartYears(C); chartCash(C);
+    // Comparaison des scénarios
+    var cmp = '<thead><tr><th>Scénario</th><th class="pa-num">Structures A1 / A2 / A3</th>' + YEARS.map(function (a) { return '<th class="pa-num">Résultat net ' + a + "</th>"; }).join("") + '<th class="pa-num">Trésorerie fin A3</th><th class="pa-num">Point bas</th></tr></thead><tbody>';
+    Object.keys(SCEN).forEach(function (k) {
+      var X = compute(state.revs[k]), mn = Math.min.apply(null, X.res.map(function (r) { return r.minM; }));
+      cmp += "<tr" + (k === state.scenario ? ' class="pa-strong"' : "") + "><td>" + SCEN[k] + '</td><td class="pa-num">' + X.ops.map(function (o) { return o.S; }).join(" / ") + "</td>" +
+        X.res.map(function (r) { return '<td class="pa-num ' + cls(r.net) + '">' + eur(r.net) + "</td>"; }).join("") +
+        '<td class="pa-num ' + cls(X.res[2].tresor) + '">' + eur(X.res[2].tresor) + '</td><td class="pa-num ' + cls(mn) + '">' + eur(mn) + "</td></tr>";
+    });
+    document.getElementById("pa-cmp-table").innerHTML = cmp + "</tbody>";
+    // Prévisionnel
     function sec(t) { return '<tr class="pa-cat"><td colspan="4">' + t + "</td></tr>"; }
     var h = '<thead><tr><th></th>' + YEARS.map(function (a) { return '<th class="pa-num">' + a + "</th>"; }).join("") + "</tr></thead><tbody>";
     h += sec("Activité");
@@ -5170,6 +5359,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     h += line("Vols par an", O.map(function (o) { return Math.round(o.vols); }));
     h += line("Jours de tournée", O.map(function (o) { return Math.round(o.jours); }));
     h += line("Kilomètres", O.map(function (o) { return Math.round(o.km).toLocaleString("fr-FR"); }));
+    h += line("Techniciens nécessaires (météo comprise)", O.map(function (o) { return isFinite(o.besoin) ? '<span class="' + (o.besoin > o.tech ? "pa-neg" : "") + '">' + o.besoin + " (prévu : " + o.tech + ")</span>" : "—"; }));
     h += line("Occupation des techniciens", O.map(function (o) { return isFinite(o.occ) ? '<span class="' + (o.occ > 1 ? "pa-neg" : "") + '">' + Math.round(o.occ * 100) + " %</span>" : "—"; }));
     h += sec("Chiffre d’affaires");
     h += line("Abonnements", O.map(function (o) { return eur(o.caAbo); }));
@@ -5177,7 +5367,10 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     h += line("Option capteurs", O.map(function (o) { return eur(o.caCapt); }));
     h += line("Remise aux structures", O.map(function (o) { return o.remise ? "− " + eur(o.remise) : eur(0); }));
     h += line("Chiffre d’affaires", O.map(function (o) { return eur(o.ca); }), "pa-strong");
-    h += line("CA moyen par structure", O.map(function (o) { return o.S > 0 ? eur(o.ca / o.S) : "—"; }));
+    h += sec("Ce que paie une structure");
+    h += line("Par an", O.map(function (o) { return o.S > 0 ? eur(o.ca / o.S) : "—"; }));
+    h += line("Par ferme et par an", O.map(function (o) { return o.F > 0 ? eur(o.ca / o.F) : "—"; }));
+    h += line("Par hectare et par an", O.map(function (o) { return o.F > 0 && o.ha > 0 ? (o.ca / o.F / o.ha).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) + " €" : "—"; }));
     h += sec("Charges");
     CATS.concat(["Amortissements"]).forEach(function (cat) {
       if (cat === "Investissements") return;
@@ -5194,10 +5387,20 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     h += sec("Trésorerie");
     h += line("Investissements payés", R.map(function (r) { return eur(r.invest); }));
     h += line("Remboursement des prêts", R.map(function (r) { return eur(r.rembourse); }));
+    h += line("Factures pas encore payées en fin d’année (BFR)", R.map(function (r) { return eur(r.bfr); }));
+    h += line("Point bas dans l’année", R.map(function (r) { return '<span class="' + cls(r.minM) + '">' + eur(r.minM) + "</span>"; }));
     h += line("Trésorerie en fin d’année", R.map(function (r) { return '<span class="' + cls(r.tresor) + '">' + eur(r.tresor) + "</span>"; }), "pa-strong");
     document.getElementById("pa-res-table").innerHTML = h + "</tbody>";
+    // Mois par mois
+    var M = C.months[monthYear], mh = "<thead><tr><th></th>" + MOIS.map(function (m) { return '<th class="pa-num">' + m + "</th>"; }).join("") + '<th class="pa-num">Total</th></tr></thead><tbody>';
+    var sum = function (a) { return a.reduce(function (x, z) { return x + z; }, 0); };
+    mh += line("Trésorerie en début de mois", [M.startCash].concat(M.endM.slice(0, 11)).map(eur).concat([""]));
+    mh += line("Encaissements", M.inM.map(eur).concat([eur(sum(M.inM))]));
+    mh += line("Décaissements", M.outM.map(function (v) { return "− " + eur(v); }).concat(["− " + eur(sum(M.outM))]));
+    mh += line("Trésorerie en fin de mois", M.endM.map(function (v) { return '<span class="' + cls(v) + '">' + eur(v) + "</span>"; }).concat([""]), "pa-strong");
+    document.getElementById("pa-month-table").innerHTML = mh + "</tbody>";
+    Array.prototype.forEach.call(document.querySelectorAll("[data-my]"), function (b) { b.setAttribute("aria-pressed", +b.getAttribute("data-my") === monthYear ? "true" : "false"); });
   }
-  function kpi(label, val, c) { return '<div class="pa-kpi"><b>' + esc(label) + '</b><span class="' + (c || "") + '">' + val + "</span></div>"; }
 
   function renderAll() { renderCosts(); renderRev(); updateComputed(); status(); }
 
@@ -5212,11 +5415,10 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       else c[f] = num(t.value);
       if (f === "prix" && c.source.indexOf("(prix modifié)") === -1) {
         c.source += " (prix modifié)";
-        var srcTd = tr.querySelector(".pa-src");
-        if (srcTd) srcTd.innerHTML = (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source) + "</a>" : esc(c.source)) + "<br>" + esc(c.date);
+        var srcTd = tr.querySelector(".pa-src"); if (srcTd) srcTd.innerHTML = srcHtml(c);
       }
     } else if (t.hasAttribute("data-rev")) {
-      state.rev[t.getAttribute("data-rev")][+t.getAttribute("data-y")] = num(t.value);
+      rev()[t.getAttribute("data-rev")][+t.getAttribute("data-y")] = num(t.value);
     } else if (t.hasAttribute("data-fin")) {
       state.fin[t.getAttribute("data-fin")] = num(t.value);
     } else return;
@@ -5226,12 +5428,15 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     var t = e.target.closest("button"); if (!t) return;
     if (t.id === "pa-launch") return open(true);
     if (t.hasAttribute("data-tab")) return tab(t.getAttribute("data-tab"));
+    if (t.hasAttribute("data-scen")) { state.scenario = t.getAttribute("data-scen"); save(); renderRev(); updateComputed(); return; }
+    if (t.hasAttribute("data-my")) { monthYear = +t.getAttribute("data-my"); updateComputed(); return; }
+    if (t.hasAttribute("data-month")) { var m = +t.getAttribute("data-month"); state.saison[m] = state.saison[m] ? 0 : 1; t.setAttribute("aria-pressed", state.saison[m] ? "true" : "false"); save(); updateComputed(); return; }
     if (t.hasAttribute("data-add")) {
       state.costs.push(row(t.getAttribute("data-add"), "Nouveau poste", "an", "fixe", 0, [1, 1, 1], 0, "Saisie manuelle", "", new Date().toLocaleDateString("fr-FR")));
       save(); renderCosts(); updateComputed(); return;
     }
     if (t.hasAttribute("data-del")) { state.costs.splice(+t.getAttribute("data-del"), 1); save(); renderCosts(); updateComputed(); return; }
-    if (t.hasAttribute("data-copy")) { var k = t.getAttribute("data-copy"); state.rev[k][1] = state.rev[k][2] = state.rev[k][0]; save(); renderRev(); updateComputed(); return; }
+    if (t.hasAttribute("data-copy")) { var k = t.getAttribute("data-copy"), r = rev(); r[k][1] = r[k][2] = r[k][0]; save(); renderRev(); updateComputed(); return; }
     var act = t.getAttribute("data-act");
     if (act === "close") open(false);
     else if (act === "export") download("agritwin-plan-affaires.json", JSON.stringify(state, null, 2), "application/json");
@@ -5249,7 +5454,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
   function exportCsv() {
-    var C = compute(), q = function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; };
+    var C = compute(rev()), q = function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; };
     var rows = [["Catégorie", "Poste", "Type", "Base", "Prix HT", "Qté A1", "Qté A2", "Qté A3", "Amortissement (ans)", "Total A1", "Total A2", "Total A3", "Source", "Lien", "Date"]];
     C.lines.forEach(function (L) {
       var c = L.c;
@@ -5278,11 +5483,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     document.getElementById("pa-file").addEventListener("change", function (e) {
       var file = e.target.files[0]; if (!file) return;
       file.text().then(function (txt) {
-        try {
-          var s = JSON.parse(txt);
-          if (!s.costs || !s.rev || !s.fin) throw new Error("format");
-          state = s; save(); renderAll();
-        } catch (er) { document.getElementById("pa-status").textContent = "Fichier non reconnu : exportez-le depuis ce même espace."; }
+        try { var s = migrate(JSON.parse(txt)); if (!s) throw new Error("format"); state = s; save(); renderAll(); }
+        catch (er) { document.getElementById("pa-status").textContent = "Fichier non reconnu : exportez-le depuis ce même espace."; }
         e.target.value = "";
       });
     });
