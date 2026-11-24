@@ -67,7 +67,7 @@ h2{font:700 clamp(26px,3.2vw,34px)/1.12 var(--display);letter-spacing:-.015em;ma
 .p{aspect-ratio:1;border-radius:3px;background:var(--trait);transform-origin:50% 100%}
 .p.abo{background:var(--vigueur)}
 .p.capt{background:var(--dense);background-image:radial-gradient(circle at 50% 50%,var(--stress) 0 18%,transparent 20%)}
-.p.ponct{background:var(--pousse)}
+.p.attente{opacity:.45}
 .carte-pied{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;font-size:13px;color:var(--schiste)}
 .carte-pied i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .echelle{margin-left:auto}
@@ -247,7 +247,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       <div class="carte-pied">
         <span><i style="background:var(--vigueur)"></i>Abonnement</span>
         <span><i style="background:var(--dense);background-image:radial-gradient(circle,var(--stress) 0 18%,transparent 20%)"></i>Avec capteurs</span>
-        <span><i style="background:var(--pousse)"></i>Ponctuelle</span>
+        <span><i style="background:var(--trait)"></i>Pas encore démarrée en début d’année</span>
         <span class="echelle" id="echelle"></span>
       </div>
     </div>
@@ -302,7 +302,8 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       <div>
         <h3>Ce qu’on vend</h3>
         <ul>
-          <li>Vol, analyse et jumeau numérique de la ferme, en abonnement ou à l’analyse.</li>
+          <li>Une seule offre : l’abonnement à 60 €/ha/an (vol toutes les deux semaines, analyse, jumeau numérique).</li>
+          <li>Une analyse d’essai offerte à chaque nouvelle structure avant la signature.</li>
           <li>Une option capteurs de sol.</li>
           <li>Autour, deux ou trois services au plus : formation des techniciens avec la licence du logiciel, drone en leasing, veille.</li>
           <li>Pas de « garantie de rendement » : c’est de l’assurance, à faire avec un partenaire.</li>
@@ -361,9 +362,8 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
   function revBase(o) {
     var b = {
       structures: [3, 6, 9], fermesParStructure: [4, 4, 4], ha: [80, 80, 80],
-      partAbo: [75, 75, 75], prixAbo: [60, 60, 60], volsAbo: [15, 15, 15],
-      prixPonct: [10, 10, 10], analysesPonct: [2, 2, 2], forfaitPonct: [30, 30, 30],
-      partCapteurs: [30, 30, 30], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
+      prixAbo: [60, 60, 60], volsAbo: [15, 15, 15], moisDebut: [3, 3, 3], essais: [1, 1, 1],
+      fermesCapteurs: [3, 6, 9], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
       techniciens: [1, 2, 2], fermesParJour: [3, 3, 3], kmParJour: [150, 150, 150],
       visites: [3, 3, 3], kmVisite: [70, 70, 70], joursDispo: [150, 150, 150], volable: [60, 60, 60],
       delai: [30, 30, 30]
@@ -409,26 +409,24 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     ],
     scenario: "central",
     revs: {
-      prudent: revBase({ structures: [2, 3, 5], partCapteurs: [20, 20, 20], techniciens: [1, 1, 1], delai: [45, 45, 45] }),
+      prudent: revBase({ structures: [2, 3, 5], fermesCapteurs: [2, 3, 4], techniciens: [1, 1, 1], delai: [45, 45, 45] }),
       central: revBase({}),
-      optimiste: revBase({ structures: [4, 8, 12], partCapteurs: [40, 40, 40], techniciens: [1, 2, 3] })
+      optimiste: revBase({ structures: [4, 8, 12], fermesCapteurs: [4, 10, 16], techniciens: [1, 2, 3] })
     },
     saison: [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    fin: { apport: 6000, pret: 10300, taux: 4.5, duree: 5, honneur: 8000, dureeHonneur: 5, subvention: 0 }
+    fin: { apport: 6000, investisseur: 10000, pret: 10300, taux: 4.5, duree: 5, honneur: 8000, dureeHonneur: 5, subvention: 0 }
   };
   var REV_ROWS = [
     ["Clients", null],
-    ["structures", "Structures clientes (coopératives, CUMA…)", ""],
+    ["structures", "Structures clientes en fin d’année (coopératives, CUMA…)", ""],
+    ["moisDebut", "Mois où la 1re structure démarre (année 1)", "n° du mois"],
     ["fermesParStructure", "Fermes suivies par structure", ""],
     ["ha", "Surface moyenne d’une ferme", "ha"],
     ["Prix", null],
-    ["partAbo", "Part des fermes en abonnement", "%"],
     ["prixAbo", "Abonnement", "€/ha/an"],
     ["volsAbo", "Vols par an (abonnement)", ""],
-    ["prixPonct", "Formule ponctuelle", "€/ha/analyse"],
-    ["analysesPonct", "Analyses par an (ponctuelle)", ""],
-    ["forfaitPonct", "Forfait de déplacement par analyse", "€"],
-    ["partCapteurs", "Abonnés qui prennent l’option capteurs", "%"],
+    ["essais", "Analyses d’essai offertes par nouvelle structure", ""],
+    ["fermesCapteurs", "Fermes équipées de capteurs en fin d’année", ""],
     ["prixCapteurs", "Option capteurs", "€/ha/an"],
     ["remise", "Remise accordée aux structures", "%"],
     ["delai", "Délai de paiement des structures", "jours"],
@@ -442,7 +440,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     ["volable", "Part de ces jours où la météo permet de voler", "%"]
   ];
   var FIN_ROWS = [
-    ["apport", "Apport des associés", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
+    ["apport", "Apport des associés", "€"], ["investisseur", "Investisseur au capital (demande au jury)", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
     ["duree", "Durée du prêt", "ans"], ["honneur", "Prêts d’honneur (0 %, apport des fondateurs)", "€"], ["subvention", "Subventions", "€"]
   ];
 
@@ -458,6 +456,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     });
     if (!SCEN[s.scenario]) s.scenario = "central";
     if (!s.saison || s.saison.length !== 12) s.saison = DEFAULTS.saison.slice();
+    if (s.fin.investisseur === undefined) s.fin.investisseur = DEFAULTS.fin.investisseur;
     s.costs.forEach(function (c) {
       if (c.poste === "Drone DJI Mavic 3M (multispectral)" && c.base === "fixe" && String(c.q) === "1,0,0") { c.base = "nouvTech"; c.q = [1, 1, 1]; }
       if (c.poste === "Formation télépilote (CATS + pratique STS + MANEX)" && c.base === "tech" && String(c.q) === "1,0,0") { c.base = "nouvTech"; c.q = [1, 1, 1]; }
@@ -515,13 +514,11 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     structures: { t: "Structures clientes", d: "Nombre de coopératives, CUMA ou autres structures qui achètent le service pour leurs adhérents. Hypothèse : prudent 2/3/5, central 3/6/9, optimiste 4/8/12. À confirmer par l’étude des payeurs (budgets, décideurs).", s: [] },
     fermesParStructure: { t: "Fermes par structure", d: "Nombre de fermes adhérentes que chaque structure fait suivre. Hypothèse de départ : 4 fermes par structure.", s: [] },
     ha: { t: "Surface moyenne d’une ferme", d: "Haute-Vienne : 3 604 exploitations pour 286 004 ha de surface agricole (recensement 2020), soit ≈ 79 ha en moyenne. Arrondi à 80 ha.", s: ["insee", "agrimap"] },
-    partAbo: { t: "Part en abonnement", d: "Part des fermes suivies en abonnement ; le reste prend la formule ponctuelle. Hypothèse : 75 %.", s: [] },
+    moisDebut: { t: "Démarrage progressif", d: "Janvier et février servent à créer la société, former le télépilote et démarcher. La 1re structure démarre en mars, avec la saison de vol ; les suivantes signent à intervalles réguliers jusqu’à la fin de l’année. Les années suivantes, les nouvelles structures arrivent en janvier, mai et septembre.", s: [] },
+    essais: { t: "Analyse d’essai offerte", d: "Avant de signer, chaque nouvelle structure reçoit une analyse gratuite sur une de ses fermes : un vol et une carte de vigueur. C’est un coût commercial (journée du technicien, kilomètres), pas une formule payante.", s: [] },
     prixAbo: { t: "Prix de l’abonnement", d: "60 €/ha/an pour 15 vols, soit 4 €/ha par vol. Repères : un prestataire drone facture dès 15 €/ha par vol ; le satellite coûte 12 à 16 €/ha par campagne ; le gain annoncé pour l’agriculteur va de 28 à 60 €/ha. Prix retenu le 17/11/2026 (scénario C).", s: ["feldfalke", "lfa"] },
     volsAbo: { t: "Vols par an", d: "Un vol toutes les deux semaines sur une saison de 30 semaines = 15 vols. Choisi le 17/11/2026 pour éviter un 2e technicien dès la 1re année.", s: [] },
-    prixPonct: { t: "Formule ponctuelle", d: "Prix par hectare et par analyse. Marché : 10 à 15 €/ha pour deux vols (Airinov, coopératives), 12 à 15 €/ha (chambre d’agriculture du Loiret, 2015), dès 15 €/ha par vol (Feldfalke). 10 €/ha reste dans le bas du marché.", s: ["feldfalke"] },
-    analysesPonct: { t: "Analyses par an", d: "Nombre de passages commandés par une ferme en formule ponctuelle. Hypothèse : 2 (par exemple les deux apports d’azote).", s: [] },
-    forfaitPonct: { t: "Forfait de déplacement", d: "Facturé à chaque analyse ponctuelle. Il remplace les « 30 € d’installation » du tableau blanc. Hypothèse.", s: [] },
-    partCapteurs: { t: "Option capteurs", d: "Part des fermes en abonnement qui ajoutent les sondes de sol. Hypothèse : 30 % (central).", s: [] },
+    fermesCapteurs: { t: "Fermes équipées de capteurs", d: "Nombre de fermes qui prennent l’option capteurs (3 sondes de sol chacune) en fin d’année. Scénario central : 3, 6 puis 9, soit une ferme sur quatre. Les sondes sont achetées l’année où la ferme est équipée.", s: ["weenat"] },
     prixCapteurs: { t: "Prix de l’option capteurs", d: "≈ 9 €/ha/an pour 3 sondes, repris du prototype. Coût en face : sonde Weenat ≈ 350 € et abonnement aux données 16,50 à 50 €/mois.", s: ["weenat"] },
     remise: { t: "Remise aux structures", d: "Remise sur volume accordée à une structure qui fait suivre plusieurs fermes. 0 % par défaut.", s: [] },
     delai: { t: "Délai de paiement", d: "Temps entre la facture et le paiement. Entre entreprises, la loi plafonne à 60 jours après la facture (ou 45 jours fin de mois). Les factures pas encore payées en fin d’année forment le BFR.", s: ["delais"] },
@@ -533,6 +530,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     joursDispo: { t: "Jours ouvrés de la saison", d: "Saison de vol de mars à septembre : environ 30 semaines × 5 jours = 150 jours par technicien.", s: [] },
     volable: { t: "Jours où l’on peut voler", d: "Pluie et vent fort empêchent les vols ; le Mavic 3M résiste à un vent d’environ 12 m/s. 60 % est une estimation, à confirmer avec les relevés de Météo-France pour Limoges.", s: ["dji"] },
     apport: { t: "Apport des associés", d: "Argent mis par les fondateurs au capital. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
+    investisseur: { t: "Investisseur au capital", d: "La demande faite au jury, comme dans « Qui veut être mon associé ? » : 10 000 € apportés au capital de la SAS en échange d’une part de la société. Rien à rembourser. Ce montant couvre le creux de trésorerie (≈ −6 000 € au début de l’année 2, quand on achète le 2e drone) avec environ un mois de charges de marge.", s: [] },
     pret: { t: "Prêt bancaire", d: "Montant emprunté, remboursé par annuités constantes. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
     taux: { t: "Taux du prêt", d: "Taux annuel hypothétique, à remplacer par une offre de banque.", s: [] },
     duree: { t: "Durée du prêt", d: "Nombre d’années de remboursement.", s: [] },
@@ -543,7 +541,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     "k:tresor": { t: "Trésorerie", d: "Argent disponible : apport + prêts + résultat + amortissements − investissements − remboursement du prêt bancaire − factures pas encore payées. Le prêt d’honneur est remboursé par les fondateurs, pas par la société.", s: [] },
     "k:min": { t: "Point bas de trésorerie", d: "Le plus faible solde en fin de mois sur les 3 ans. S’il est négatif, il manque de l’argent à un moment, même si l’année finit bien.", s: [] },
     "r:besoin": { t: "Techniciens nécessaires", d: "Jours de tournée ÷ (jours ouvrés de la saison × part des jours volables), arrondi au-dessus. En rouge s’il en faut plus que prévu.", s: [] },
-    "r:ca": { t: "Chiffre d’affaires", d: "Abonnements (fermes × ha × prix) + formule ponctuelle (fermes × (ha × prix + forfait) × analyses) + capteurs, moins la remise.", s: [] },
+    "r:ca": { t: "Chiffre d’affaires", d: "Chaque mois : fermes suivies ce mois-là × ha × prix ÷ 12, plus l’option capteurs pour les fermes équipées, moins la remise. Une ferme n’est facturée qu’à partir du mois où sa structure démarre.", s: [] },
     "r:structure": { t: "Ce que paie une structure", d: "Chiffre d’affaires ÷ nombre de structures, puis par ferme et par hectare. À comparer au gain annoncé pour l’agriculteur : 28 à 60 €/ha.", s: [] },
     "r:amort": { t: "Amortissements", d: "Un achat de plus de 500 € HT qui n’est pas un consommable est étalé sur sa durée d’usage (cours de finance) : prix ÷ durée chaque année.", s: [] },
     "r:is": { t: "Impôt sur les sociétés", d: "15 % jusqu’à 42 500 € de bénéfice (taux réduit des PME), 25 % au-delà. Les pertes d’une année réduisent le bénéfice imposable des suivantes.", s: ["is"] },
@@ -595,30 +593,38 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     var wSeason = on.map(function (v) { return nOn ? v / nOn : 1 / 12; });
     var prevS = 0, prevFC = 0, prevT = 0;
     for (y = 0; y < 3; y++) {
-      var S = num(r.structures[y]), F = Math.round(S * num(r.fermesParStructure[y]));
-      var fa = Math.round(F * num(r.partAbo[y]) / 100), fp = F - fa;
-      var fc = Math.round(fa * num(r.partCapteurs[y]) / 100);
+      var S = num(r.structures[y]), fps = num(r.fermesParStructure[y]), F = Math.round(S * fps);
       var ha = num(r.ha[y]);
-      var nS = Math.max(0, S - prevS), nFC = Math.max(0, fc - prevFC);
+      var nS = Math.max(0, S - prevS);
+      // mois d'arrivée des nouvelles structures : à partir de mars en année 1, puis réparties sur l'année
+      var m0 = y === 0 ? Math.min(11, Math.max(0, Math.round(num(r.moisDebut[0])) - 1)) : 0, arrivees = [];
+      for (var k = 0; k < nS; k++) arrivees.push(m0 + Math.floor(k * (12 - m0) / nS));
+      var fc = Math.min(F, Math.round(num(r.fermesCapteurs[y]))), ratioC = F > 0 ? fc / F : 0;
+      var nFC = Math.max(0, fc - prevFC), fermesM = [], captM = [], volsM = [], essaisV = nS * num(r.essais[y]);
+      for (m = 0; m < 12; m++) {
+        var sAct = prevS + arrivees.filter(function (a) { return a <= m; }).length;
+        fermesM.push(sAct * fps); captM.push(sAct * fps * ratioC);
+        volsM.push(sAct * fps * num(r.volsAbo[y]) * wSeason[m]);
+      }
       prevS = S; prevFC = fc;
-      var vols = fa * num(r.volsAbo[y]) + fp * num(r.analysesPonct[y]);
+      var sumF = fermesM.reduce(function (a, b) { return a + b; }, 0), sumC = captM.reduce(function (a, b) { return a + b; }, 0);
+      var vols = volsM.reduce(function (a, b) { return a + b; }, 0) + essaisV;
       var jours = num(r.fermesParJour[y]) > 0 ? vols / num(r.fermesParJour[y]) : 0;
       var km = jours * num(r.kmParJour[y]) + nS * num(r.visites[y]) * num(r.kmVisite[y]);
       var tech = num(r.techniciens[y]), nT = Math.max(0, tech - prevT);
       prevT = tech;
       var capa = num(r.joursDispo[y]) * num(r.volable[y]) / 100;
-      var caAbo = fa * ha * num(r.prixAbo[y]);
-      var caPonct = fp * (ha * num(r.prixPonct[y]) + num(r.forfaitPonct[y])) * num(r.analysesPonct[y]);
-      var caCapt = fc * ha * num(r.prixCapteurs[y]);
-      var brut = caAbo + caPonct + caCapt, rem = num(r.remise[y]) / 100;
+      var caAbo = sumF * ha * num(r.prixAbo[y]) / 12;
+      var caCapt = sumC * ha * num(r.prixCapteurs[y]) / 12;
+      var brut = caAbo + caCapt, rem = num(r.remise[y]) / 100;
       var bill = [];
-      for (m = 0; m < 12; m++) bill.push(((caAbo + caCapt) / 12 + caPonct * wSeason[m]) * (1 - rem));
-      ops.push({ S: S, F: F, fa: fa, fp: fp, fc: fc, ha: ha, vols: vols, jours: jours, km: km, tech: tech,
+      for (m = 0; m < 12; m++) bill.push((fermesM[m] * ha * num(r.prixAbo[y]) + captM[m] * ha * num(r.prixCapteurs[y])) / 12 * (1 - rem));
+      ops.push({ S: S, F: F, fc: fc, ha: ha, vols: vols, essais: essaisV, fermesM: fermesM, Fmoy: sumF / 12, nS: nS, arrivees: arrivees, jours: jours, km: km, tech: tech,
         occ: tech > 0 && capa > 0 ? jours / (capa * tech) : Infinity,
         besoin: capa > 0 ? Math.max(1, Math.ceil(jours / capa - 1e-9)) : Infinity,
-        caAbo: caAbo, caPonct: caPonct, caCapt: caCapt, remise: brut * rem, ca: brut * (1 - rem), bill: bill,
+        caAbo: caAbo, caCapt: caCapt, remise: brut * rem, ca: brut * (1 - rem), bill: bill,
         delaiM: Math.min(12, Math.max(0, Math.round(num(r.delai[y]) / 30))),
-        base: { fixe: 1, tech: tech, nouvTech: nT, structure: S, nouvStructure: nS, ferme: F, fermeCapteur: fc, nouvFermeCapteur: nFC, km: km, jour: jours } });
+        base: { fixe: 1, tech: tech, nouvTech: nT, structure: S, nouvStructure: nS, ferme: sumF / 12, fermeCapteur: sumC / 12, nouvFermeCapteur: nFC, km: km, jour: jours } });
     }
     var lines = state.costs.map(function (c) {
       var mult = c.kind === "mois" ? 12 : 1, amounts = [];
@@ -633,7 +639,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     var P = num(f.pret), t = num(f.taux) / 100, n = Math.max(1, Math.round(num(f.duree)));
     var annuite = t > 0 ? P * t / (1 - Math.pow(1 + t, -n)) : P / n, solde = P;
     var dh = Math.max(1, Math.round(num(f.dureeHonneur)));
-    var start = num(f.apport) + P + num(f.honneur) + num(f.subvention);
+    var start = num(f.apport) + num(f.investisseur) + P + num(f.honneur) + num(f.subvention);
     var res = [], tresor = start, deficit = 0, prevBFR = 0, months = [], prevBill = null;
     for (y = 0; y < 3; y++) {
       var o = ops[y], byCat = {}, fixes = 0, vars = 0, invest = 0, amortT = 0, outM = [];
@@ -695,7 +701,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     else if (benef[0] < 0 && minAll >= 0) phrase = debut + "perd de l’argent la première année, puis se redresse sans manquer de trésorerie.";
     else phrase = debut + '<span class="neg">manque d’argent à un moment</span> : il faut plus d’apport ou de prêt.';
     $("verdict").innerHTML = phrase;
-    $("verdict-sous").textContent = "Scénario " + SCEN[state.scenario].toLowerCase() + " : " + Math.round(num(r.prixAbo[0])) + " €/ha/an en abonnement, " + O[0].F + " fermes suivies au départ, " + O[2].F + " en année 3. Une structure paie en moyenne " + eur(O[0].S ? O[0].ca / O[0].S : 0) + " par an.";
+    $("verdict-sous").textContent = "Scénario " + SCEN[state.scenario].toLowerCase() + " : " + Math.round(num(r.prixAbo[0])) + " €/ha/an en abonnement, " + O[0].F + " fermes en fin d’année 1, " + O[2].F + " en fin d’année 3. Premier client en " + MOIS[O[0].arrivees[0] || 0] + " ; une ferme suivie toute l’année rapporte " + eur(num(r.ha[0]) * (num(r.prixAbo[0]) )) + ".";
     $("trio").innerHTML =
       trio("Résultat net année 1", R[0].net, "k:net") +
       trio("Résultat net année 3", R[2].net, "k:net") +
@@ -706,14 +712,15 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     $("echelle").textContent = unit > 1 ? "1 case = " + unit + " fermes" : "1 case = 1 ferme";
     var html = "";
     O.forEach(function (o, y) {
-      var nc = Math.round(o.fc / unit), na = Math.round(o.fa / unit) - nc, np = Math.round(o.fp / unit), tiles = "";
-      var tot = Math.max(0, na) + nc + np;
+      var nc = Math.round(o.fc / unit), na = Math.round(o.F / unit) - nc, nd = Math.round(o.fermesM[0] / unit), tiles = "";
+      var tot = Math.max(0, na) + nc;
       for (var i = 0; i < tot; i++) {
-        var k = i < nc ? "capt" : i < nc + Math.max(0, na) ? "abo" : "ponct";
+        var k = i < nc ? "capt" : "abo";
+        if (y === 0 && i >= tot - (tot - nd) && nd < tot && i >= nd) k += " attente";
         tiles += '<span class="p ' + k + (i >= prevF[y] ? " neuf" : "") + '" style="animation-delay:' + Math.min(600, (i - prevF[y]) * 18) + 'ms"></span>';
       }
       prevF[y] = tot;
-      html += '<div class="annee"><h3>' + ["Année 1", "Année 2", "Année 3"][y] + "<span>" + o.F + " fermes</span></h3><div class=\"parcelles\" role=\"img\" aria-label=\"" + o.F + " fermes en année " + (y + 1) + " dont " + o.fc + " avec capteurs et " + o.fp + " en formule ponctuelle\">" + tiles + "</div></div>";
+      html += '<div class="annee"><h3>' + ["Année 1", "Année 2", "Année 3"][y] + "<span>" + o.F + " fermes</span></h3><div class=\"parcelles\" role=\"img\" aria-label=\"" + o.F + " fermes en fin d’année " + (y + 1) + " dont " + o.fc + " avec capteurs\">" + tiles + "</div></div>";
     });
     $("annees").innerHTML = html;
     // Alertes
@@ -730,10 +737,10 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
   var LEVIERS = [
     ["prixAbo", "Prix de l’abonnement", 20, 120, 1, " €/ha/an"],
     ["fermesParStructure", "Fermes suivies par structure", 1, 15, 1, ""],
-    ["partCapteurs", "Abonnés avec capteurs", 0, 100, 5, " %"],
+    ["moisDebut", "Mois où le premier client démarre", 1, 12, 1, ""],
     ["volable", "Jours où la météo permet de voler", 30, 90, 5, " %"],
     ["delai", "Délai de paiement des structures", 0, 60, 5, " jours"],
-    ["partAbo", "Fermes en abonnement (le reste en ponctuel)", 0, 100, 5, " %"]
+    ["prixCapteurs", "Prix de l’option capteurs", 0, 30, 1, " €/ha/an"]
   ];
   function renderLeviers() {
     var r = rev(), h = "";
@@ -741,9 +748,11 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       [0, 1, 2].map(function (y) { return '<div><span>A' + (y + 1) + '</span><button type="button" data-pas="structures" data-y="' + y + '" data-d="-1" aria-label="Une structure de moins en année ' + (y + 1) + '">−</button><output class="num" id="o-structures-' + y + '">' + r.structures[y] + '</output><button type="button" data-pas="structures" data-y="' + y + '" data-d="1" aria-label="Une structure de plus en année ' + (y + 1) + '">+</button></div>'; }).join("") + "</div></div>";
     h += '<div class="levier"><div class="lab">Techniciens ' + info("techniciens") + '</div><div class="pas">' +
       [0, 1, 2].map(function (y) { return '<div><span>A' + (y + 1) + '</span><button type="button" data-pas="techniciens" data-y="' + y + '" data-d="-1" aria-label="Un technicien de moins en année ' + (y + 1) + '">−</button><output class="num" id="o-techniciens-' + y + '">' + r.techniciens[y] + '</output><button type="button" data-pas="techniciens" data-y="' + y + '" data-d="1" aria-label="Un technicien de plus en année ' + (y + 1) + '">+</button></div>'; }).join("") + "</div></div>";
+    h += '<div class="levier"><div class="lab">Fermes équipées de capteurs ' + info("fermesCapteurs") + '</div><div class="pas">' +
+      [0, 1, 2].map(function (y) { return '<div><span>A' + (y + 1) + '</span><button type="button" data-pas="fermesCapteurs" data-y="' + y + '" data-d="-1" aria-label="Une ferme équipée de moins en année ' + (y + 1) + '">−</button><output class="num" id="o-fermesCapteurs-' + y + '">' + r.fermesCapteurs[y] + '</output><button type="button" data-pas="fermesCapteurs" data-y="' + y + '" data-d="1" aria-label="Une ferme équipée de plus en année ' + (y + 1) + '">+</button></div>'; }).join("") + "</div></div>";
     LEVIERS.forEach(function (L) {
       var v = num(r[L[0]][0]);
-      h += '<div class="levier"><label for="lv-' + L[0] + '">' + L[1] + " " + info(L[0]) + '<span class="val num" id="v-' + L[0] + '">' + v + L[5] + '</span></label><input type="range" id="lv-' + L[0] + '" data-levier="' + L[0] + '" min="' + L[2] + '" max="' + L[3] + '" step="' + L[4] + '" value="' + v + '"></div>';
+      h += '<div class="levier"><label for="lv-' + L[0] + '">' + L[1] + " " + info(L[0]) + '<span class="val num" id="v-' + L[0] + '">' + (L[0] === "moisDebut" ? MOIS[v - 1] : v + L[5]) + '</span></label><input type="range" id="lv-' + L[0] + '" data-levier="' + L[0] + '" min="' + L[2] + '" max="' + L[3] + '" step="' + L[4] + '" value="' + v + '"></div>';
     });
     $("leviers").innerHTML = h;
   }
@@ -840,9 +849,9 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     } else if (panneauType === "resultat") {
       var O = C.ops, R = C.res, ln = function (l, v, cl) { return "<tr" + (cl ? ' class="' + cl + '"' : "") + "><td>" + l + "</td>" + v.map(function (x) { return '<td class="r">' + x + "</td>"; }).join("") + "</tr>"; }, sec = function (t) { return '<tr class="sec"><td colspan="4">' + t + "</td></tr>"; };
       h = '<div class="defile"><table class="tab"><thead><tr><th></th><th class="r">Année 1</th><th class="r">Année 2</th><th class="r">Année 3</th></tr></thead><tbody>';
-      h += sec("Activité") + ln("Fermes suivies", O.map(function (o) { return o.F; })) + ln("Vols", O.map(function (o) { return Math.round(o.vols); })) + ln("Jours de tournée", O.map(function (o) { return Math.round(o.jours); })) + ln("Techniciens nécessaires " + info("r:besoin"), O.map(function (o) { return '<span class="' + (o.besoin > o.tech ? "neg" : "") + '">' + o.besoin + " (prévu " + o.tech + ")</span>"; }));
-      h += sec("Chiffre d’affaires " + info("r:ca")) + ln("Abonnements", O.map(function (o) { return eur(o.caAbo); })) + ln("Formule ponctuelle", O.map(function (o) { return eur(o.caPonct); })) + ln("Option capteurs", O.map(function (o) { return eur(o.caCapt); })) + ln("Remise", O.map(function (o) { return o.remise ? "− " + eur(o.remise) : eur(0); })) + ln("Total", O.map(function (o) { return eur(o.ca); }), "fort");
-      h += ln("Par structure " + info("r:structure"), O.map(function (o) { return o.S ? eur(o.ca / o.S) : "—"; })) + ln("Par hectare", O.map(function (o) { return o.F && o.ha ? (o.ca / o.F / o.ha).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) + " €" : "—"; }));
+      h += sec("Activité") + ln("Fermes suivies en fin d’année", O.map(function (o) { return o.F; })) + ln("Nouvelles structures (mois d’arrivée)", O.map(function (o) { return o.nS + (o.arrivees.length ? " (" + o.arrivees.map(function (a) { return MOIS[a]; }).join(", ") + ")" : ""); })) + ln("Vols (dont essais offerts)", O.map(function (o) { return Math.round(o.vols) + " (" + o.essais + ")"; })) + ln("Jours de tournée", O.map(function (o) { return Math.round(o.jours); })) + ln("Techniciens nécessaires " + info("r:besoin"), O.map(function (o) { return '<span class="' + (o.besoin > o.tech ? "neg" : "") + '">' + o.besoin + " (prévu " + o.tech + ")</span>"; }));
+      h += sec("Chiffre d’affaires " + info("r:ca")) + ln("Abonnements", O.map(function (o) { return eur(o.caAbo); })) + ln("Option capteurs", O.map(function (o) { return eur(o.caCapt); })) + ln("Remise", O.map(function (o) { return o.remise ? "− " + eur(o.remise) : eur(0); })) + ln("Total", O.map(function (o) { return eur(o.ca); }), "fort");
+      h += ln("Par structure " + info("r:structure"), O.map(function (o) { return o.S ? eur(o.ca / o.S) : "—"; })) + ln("Par hectare", O.map(function (o) { return o.Fmoy && o.ha ? (o.ca / o.Fmoy / o.ha).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) + " €" : "—"; }));
       h += sec("Charges");
       CATS.concat(["Amortissements"]).forEach(function (c) { if (c !== "Investissements") h += ln(c + (c === "Amortissements" ? " " + info("r:amort") : ""), R.map(function (x) { return eur(x.byCat[c] || 0); })); });
       h += ln("Intérêts d’emprunt", R.map(function (x) { return eur(x.interet); })) + ln("Total", R.map(function (x) { return eur(x.charges); }), "fort");
@@ -900,7 +909,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     var t = e.target;
     if (t.hasAttribute("data-levier")) {
       var k = t.getAttribute("data-levier"), v = num(t.value), L = LEVIERS.filter(function (x) { return x[0] === k; })[0];
-      rev()[k] = [v, v, v]; $("v-" + k).textContent = v + L[5]; save(); tout(); return;
+      rev()[k] = [v, v, v]; $("v-" + k).textContent = k === "moisDebut" ? MOIS[v - 1] : v + L[5]; save(); tout(); return;
     }
     var card = t.closest(".ligne-cout");
     if (card && t.hasAttribute("data-f")) {
@@ -924,7 +933,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     if (t.hasAttribute("data-info")) { if (popFor === t && popPinned) closePop(); else openPop(t, true); return; }
     if (t.id === "menu-btn") { var o = menu.classList.toggle("ouvert"); t.setAttribute("aria-expanded", o ? "true" : "false"); return; }
     if (t.hasAttribute("data-scen")) { state.scenario = t.getAttribute("data-scen"); prevF = [0, 0, 0]; save(); renderLeviers(); tout(); return; }
-    if (t.hasAttribute("data-pas")) { var k = t.getAttribute("data-pas"), y = +t.getAttribute("data-y"), r = rev(); r[k][y] = Math.max(k === "techniciens" ? 1 : 0, num(r[k][y]) + num(t.getAttribute("data-d"))); $("o-" + k + "-" + y).textContent = r[k][y]; save(); tout(); return; }
+    if (t.hasAttribute("data-pas")) { var k = t.getAttribute("data-pas"), y = +t.getAttribute("data-y"), r = rev(); r[k][y] = Math.max(k === "techniciens" ? 1 : 0, num(r[k][y]) + num(t.getAttribute("data-d"))); if (k === "fermesCapteurs") r[k][y] = Math.min(r[k][y], Math.round(num(r.structures[y]) * num(r.fermesParStructure[y]))); $("o-" + k + "-" + y).textContent = r[k][y]; save(); tout(); return; }
     if (t.hasAttribute("data-ouvrir")) { ouvrir(t.getAttribute("data-ouvrir")); return; }
     if (t.hasAttribute("data-cat")) { ouvrir("cat", t.getAttribute("data-cat")); return; }
     if (t.id === "fermer") { fermer(); return; }
