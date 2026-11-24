@@ -4958,7 +4958,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   var SCEN = { prudent: "Prudent", central: "Central", optimiste: "Optimiste" };
   var KINDS = { invest: "Investissement", an: "€ par an", mois: "€ par mois", unite: "€ par unité" };
   var BASES = {
-    fixe: "forfait", tech: "par technicien", nouvTech: "par nouveau technicien", structure: "par structure cliente",
+    fixe: "forfait", tech: "par télépilote", nouvTech: "par nouveau télépilote", salarie: "par technicien salarié", coutFondateurs: "coût mensuel des fondateurs payés", structure: "par structure cliente",
     nouvStructure: "par nouvelle structure", ferme: "par ferme suivie",
     fermeCapteur: "par ferme avec capteurs", nouvFermeCapteur: "par nouvelle ferme avec capteurs",
     km: "par km", jour: "par jour de tournée"
@@ -4975,10 +4975,11 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
   }
   function revBase(o) {
     var b = {
-      structures: [3, 6, 9], fermesParStructure: [4, 4, 4], ha: [80, 80, 80],
+      structures: [5, 12, 20], fermesParStructure: [4, 4, 4], ha: [80, 80, 80],
       prixAbo: [60, 60, 60], volsAbo: [15, 15, 15], moisDebut: [3, 3, 3], essais: [1, 1, 1],
-      fermesCapteurs: [3, 6, 9], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
-      techniciens: [1, 2, 2], fermesParJour: [3, 3, 3], kmParJour: [150, 150, 150],
+      fermesCapteurs: [5, 12, 20], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
+      techniciens: [2, 3, 4], pilotesFondateurs: [2, 2, 2], fondateursPayes: [2, 4, 6], salaireFondateur: [1000, 1200, 1500],
+      fermesParJour: [3, 3, 3], kmParJour: [150, 150, 150],
       visites: [3, 3, 3], kmVisite: [70, 70, 70], joursDispo: [150, 150, 150], volable: [60, 60, 60],
       delai: [30, 30, 30]
     };
@@ -4986,7 +4987,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     return b;
   }
   var DEFAULTS = {
-    v: 2,
+    v: 2, equipeV: 1,
     costs: [
       row("Investissements", "Drone DJI Mavic 3M (multispectral)", "invest", "nouvTech", 3800, [1, 1, 1], 3, "3 726 à 3 900 € HT selon revendeur", "https://www.flyingeye.fr", "17/11/2026"),
       row("Investissements", "Kit 3 batteries + hub de charge 100 W", "invest", "fixe", 412.5, [1, 0, 1], 2, "Flyingeye, 495 € TTC", "https://www.flyingeye.fr/fr/products/accessoires/dji-batterie-kit-mavic-3-enterprise"),
@@ -4998,10 +4999,10 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       row("Création et démarrage", "Rédaction des statuts (avocat ou plateforme)", "an", "fixe", 800, [1, 0, 0], 0, "Estimation, à confirmer par devis"),
       row("Création et démarrage", "Formation télépilote (CATS + pratique STS + MANEX)", "an", "nouvTech", 1480, [1, 1, 1], 0, "Minute Drone ; 950 à 2 430 € selon l’organisme", "https://minutedrone.com/formation/tarif-formation-telepilote-drone"),
       row("Création et démarrage", "Enregistrement exploitant AlphaTango", "an", "fixe", 0, [1, 0, 0], 0, "Gratuit (DGAC)"),
-      row("Personnel", "Technicien télépilote (coût employeur, SMIC)", "mois", "tech", 1987.76, [1, 1, 1], 0, "Simulateur Urssaf : SMIC 1 867,02 € brut, net 1 455,99 €, réduction générale comprise", "https://mon-entreprise.urssaf.fr", "24/11/2026"),
+      row("Personnel", "Technicien télépilote salarié (coût employeur, SMIC)", "mois", "salarie", 1987.76, [1, 1, 1], 0, "Simulateur Urssaf : SMIC 1 867,02 € brut, net 1 455,99 €, réduction générale comprise", "https://mon-entreprise.urssaf.fr", "24/11/2026"),
       row("Personnel", "Mutuelle d’entreprise (part employeur)", "mois", "tech", 27, [1, 1, 1], 0, "45 à 65 €/mois par salarié, 50 % minimum à l’employeur", "https://direct-mutuelle-groupe.com/tarif-moyen-mutuelle-collective.php"),
       row("Personnel", "Médecine du travail", "an", "tech", 110, [1, 1, 1], 0, "Estimation"),
-      row("Personnel", "Rémunération du dirigeant", "mois", "fixe", 0, [1, 1, 1], 0, "Choix : 0 € tant que l’activité démarre"),
+      row("Personnel", "Rémunération des fondateurs (coût pour la société)", "mois", "coutFondateurs", 1, [1, 1, 1], 0, "Fondateurs payés × salaire net × 1,33 en année 1 (ACRE), × 1,70 ensuite : règle du modèle Excel du cours"),
       row("Véhicule et déplacements", "Location de la fourgonnette (LLD)", "mois", "tech", 350, [1, 1, 1], 0, "Berlingo Van dès 299 € HT/mois, 15 000 km/an", "https://www.loueruneauto.fr", "17/11/2026"),
       row("Véhicule et déplacements", "Assurance du véhicule", "an", "tech", 700, [1, 1, 1], 0, "Estimation", "", "17/11/2026"),
       row("Véhicule et déplacements", "Carburant (6,5 L/100 km, gazole 1,80 € HT/L)", "unite", "km", 0.117, [1, 1, 1], 0, "Gazole 2,163 €/L TTC le 16/11/2026", "https://media.roole.fr", "17/11/2026"),
@@ -5023,12 +5024,12 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     ],
     scenario: "central",
     revs: {
-      prudent: revBase({ structures: [2, 3, 5], fermesCapteurs: [2, 3, 4], techniciens: [1, 1, 1], delai: [45, 45, 45] }),
+      prudent: revBase({ structures: [4, 9, 15], fermesCapteurs: [4, 9, 15], techniciens: [2, 2, 3], fondateursPayes: [2, 3, 5], delai: [45, 45, 45] }),
       central: revBase({}),
-      optimiste: revBase({ structures: [4, 8, 12], fermesCapteurs: [4, 10, 16], techniciens: [1, 2, 3] })
+      optimiste: revBase({ structures: [6, 15, 28], fermesCapteurs: [6, 15, 28], techniciens: [2, 3, 5] })
     },
     saison: [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    fin: { apport: 6000, investisseur: 10000, pret: 10300, taux: 4.5, duree: 5, honneur: 8000, dureeHonneur: 5, subvention: 0 }
+    fin: { apport: 6000, investisseur: 0, pret: 20000, taux: 4.5, duree: 5, honneur: 48000, dureeHonneur: 5, subvention: 0 }
   };
   var REV_ROWS = [
     ["Clients", null],
@@ -5045,7 +5046,11 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     ["remise", "Remise accordée aux structures", "%"],
     ["delai", "Délai de paiement des structures", "jours"],
     ["Activité", null],
-    ["techniciens", "Techniciens (et fourgonnettes)", ""],
+    ["Équipe", null],
+    ["fondateursPayes", "Fondateurs payés (sur 6 qui travaillent)", ""],
+    ["salaireFondateur", "Salaire net d’un fondateur", "€/mois"],
+    ["techniciens", "Télépilotes en tout (une fourgonnette chacun)", ""],
+    ["pilotesFondateurs", "dont fondateurs télépilotes", ""],
     ["fermesParJour", "Fermes survolées par jour de tournée", ""],
     ["kmParJour", "Km par jour de tournée", "km"],
     ["visites", "Visites commerciales par nouvelle structure", ""],
@@ -5054,7 +5059,7 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     ["volable", "Part de ces jours où la météo permet de voler", "%"]
   ];
   var FIN_ROWS = [
-    ["apport", "Apport des associés", "€"], ["investisseur", "Investisseur au capital (demande au jury)", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
+    ["apport", "Apport des associés", "€"], ["investisseur", "Investisseur au capital", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
     ["duree", "Durée du prêt", "ans"], ["honneur", "Prêts d’honneur (0 %, apport des fondateurs)", "€"], ["subvention", "Subventions", "€"]
   ];
 
@@ -5071,6 +5076,17 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     if (!SCEN[s.scenario]) s.scenario = "central";
     if (!s.saison || s.saison.length !== 12) s.saison = DEFAULTS.saison.slice();
     if (s.fin.investisseur === undefined) s.fin.investisseur = DEFAULTS.fin.investisseur;
+    if (!s.equipeV) {  // passage à l'équipe de 6 fondateurs : on reprend les coûts d'origine de ces deux lignes
+      s.costs.forEach(function (c) {
+        if (/^Technicien télépilote/.test(c.poste) || /^Rémunération d/.test(c.poste)) {
+          var dc = DEFAULTS.costs.filter(function (x) { return x.cat === c.cat && x.poste.slice(0, 12) === c.poste.slice(0, 12); })[0];
+          if (dc) { c.poste = dc.poste; c.kind = dc.kind; c.base = dc.base; c.prix = dc.prix; c.q = dc.q.slice(); c.source = dc.source; c.url = dc.url; c.date = dc.date; }
+        }
+      });
+      Object.keys(SCEN).forEach(function (k) { ["structures", "fermesCapteurs", "techniciens", "fondateursPayes"].forEach(function (p) { s.revs[k][p] = DEFAULTS.revs[k][p].slice(); }); });
+      s.fin.pret = DEFAULTS.fin.pret; s.fin.honneur = DEFAULTS.fin.honneur; s.fin.investisseur = DEFAULTS.fin.investisseur;
+      s.equipeV = 1;
+    }
     s.costs.forEach(function (c) {
       if (c.poste === "Drone DJI Mavic 3M (multispectral)" && c.base === "fixe" && String(c.q) === "1,0,0") { c.base = "nouvTech"; c.q = [1, 1, 1]; }
       if (c.poste === "Formation télépilote (CATS + pratique STS + MANEX)" && c.base === "tech" && String(c.q) === "1,0,0") { c.base = "nouvTech"; c.q = [1, 1, 1]; }
@@ -5136,7 +5152,10 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     prixCapteurs: { t: "Prix de l’option capteurs", d: "≈ 9 €/ha/an pour 3 sondes, repris du prototype. Coût en face : sonde Weenat ≈ 350 € et abonnement aux données 16,50 à 50 €/mois.", s: ["weenat"] },
     remise: { t: "Remise aux structures", d: "Remise sur volume accordée à une structure qui fait suivre plusieurs fermes. 0 % par défaut.", s: [] },
     delai: { t: "Délai de paiement", d: "Temps entre la facture et le paiement. Entre entreprises, la loi plafonne à 60 jours après la facture (ou 45 jours fin de mois). Les factures pas encore payées en fin d’année forment le BFR.", s: ["delais"] },
-    techniciens: { t: "Techniciens", d: "Chaque technicien a sa fourgonnette, sa formation, son téléphone et sa mutuelle (lignes « par technicien » de l’onglet Coûts). Comparez avec la ligne « Techniciens nécessaires ».", s: [] },
+    techniciens: { t: "Télépilotes", d: "Tous ceux qui volent : les fondateurs télépilotes et les techniciens salariés. Chacun a son drone, sa fourgonnette, sa formation et son téléphone. Comparez avec la ligne « Télépilotes nécessaires ».", s: [] },
+    pilotesFondateurs: { t: "Fondateurs télépilotes", d: "Deux des six fondateurs volent. Au-delà, on embauche des techniciens au SMIC.", s: [] },
+    fondateursPayes: { t: "Fondateurs payés", d: "Les six associés travaillent à plein temps. La paie suit le chiffre d’affaires : les 2 télépilotes en année 1, 4 fondateurs en année 2, les 6 en année 3. Ceux qui ne sont pas encore payés vivent de leur prêt d’honneur personnel.", s: [] },
+    salaireFondateur: { t: "Salaire d’un fondateur", d: "1 000 € net par mois en année 1, 1 200 € en année 2, 1 500 € en année 3. Coût pour la société : × 1,33 en année 1 grâce à l’ACRE, × 1,70 ensuite (règle du modèle Excel du cours pour un dirigeant de SAS).", s: [] },
     fermesParJour: { t: "Fermes par jour de tournée", d: "Nombre de fermes de 80 ha survolées en une journée, trajets compris. Hypothèse du 17/11/2026.", s: [] },
     kmParJour: { t: "Km par jour", d: "Distance moyenne d’une journée de tournée en Haute-Vienne et Creuse. Hypothèse du 17/11/2026.", s: [] },
     visites: { t: "Visites commerciales", d: "Rendez-vous nécessaires pour signer une nouvelle structure. Hypothèse : 3 visites.", s: [] },
@@ -5144,11 +5163,11 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     joursDispo: { t: "Jours ouvrés de la saison", d: "Saison de vol de mars à septembre : environ 30 semaines × 5 jours = 150 jours par technicien.", s: [] },
     volable: { t: "Jours où l’on peut voler", d: "Pluie et vent fort empêchent les vols ; le Mavic 3M résiste à un vent d’environ 12 m/s. 60 % est une estimation, à confirmer avec les relevés de Météo-France pour Limoges.", s: ["dji"] },
     apport: { t: "Apport des associés", d: "Argent mis par les fondateurs au capital. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
-    investisseur: { t: "Investisseur au capital", d: "La demande faite au jury, comme dans « Qui veut être mon associé ? » : 10 000 € apportés au capital de la SAS en échange d’une part de la société. Rien à rembourser. Ce montant couvre le creux de trésorerie (≈ −6 000 € au début de l’année 2, quand on achète le 2e drone) avec environ un mois de charges de marge.", s: [] },
+    investisseur: { t: "Investisseur au capital", d: "0 € sur les trois premières années : la société se lance avec ses fondateurs, leurs prêts d’honneur et un prêt bancaire. La demande au jury vient après l’année 3, pour étendre AgriTwin au reste du Limousin. Vous pouvez tester ici l’effet d’un apport.", s: [] },
     pret: { t: "Prêt bancaire", d: "Montant emprunté, remboursé par annuités constantes. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
     taux: { t: "Taux du prêt", d: "Taux annuel hypothétique, à remplacer par une offre de banque.", s: [] },
     duree: { t: "Durée du prêt", d: "Nombre d’années de remboursement.", s: [] },
-    honneur: { t: "Prêts d’honneur", d: "Prêt à 0 %, sans garantie, accordé au fondateur (pas à la société) qui l’apporte ensuite au capital. C’est donc lui qui le rembourse, pas l’entreprise. Montants : 3 000 à 50 000 € chez Initiative France, environ 10 000 € en moyenne ; 3 000 à 30 000 € sur 2 à 5 ans chez Initiative Nouvelle-Aquitaine. Il rassure la banque et facilite le prêt bancaire. 8 000 € : hypothèse prudente, sous la moyenne.", s: ["initiative", "initiativeNA", "bpiHonneur"] },
+    honneur: { t: "Prêts d’honneur", d: "6 fondateurs × 8 000 €. Prêt à 0 %, sans garantie, accordé au fondateur (pas à la société) qui l’apporte ensuite au capital. C’est donc lui qui le rembourse, sur son salaire, pas l’entreprise. Montants : 3 000 à 50 000 € chez Initiative France, environ 10 000 € en moyenne ; 3 000 à 30 000 € sur 2 à 5 ans chez Initiative Nouvelle-Aquitaine. Il rassure la banque et facilite le prêt bancaire. 8 000 € : hypothèse prudente, sous la moyenne.", s: ["initiative", "initiativeNA", "bpiHonneur"] },
     
     subvention: { t: "Subventions", d: "Aides non remboursables. Le cours de marketing rappelle qu’une subvention reste une hypothèse tant qu’elle n’est pas acquise : laisser 0 tant qu’elle n’est pas obtenue.", s: [] },
     "k:net": { t: "Résultat net", d: "Chiffre d’affaires − toutes les charges (amortissements et intérêts compris) − impôt sur les sociétés.", s: ["is"] },
@@ -5225,7 +5244,8 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       var vols = volsM.reduce(function (a, b) { return a + b; }, 0) + essaisV;
       var jours = num(r.fermesParJour[y]) > 0 ? vols / num(r.fermesParJour[y]) : 0;
       var km = jours * num(r.kmParJour[y]) + nS * num(r.visites[y]) * num(r.kmVisite[y]);
-      var tech = num(r.techniciens[y]), nT = Math.max(0, tech - prevT);
+      var tech = num(r.techniciens[y]), nT = Math.max(0, tech - prevT), sal = Math.max(0, tech - num(r.pilotesFondateurs[y]));
+      var coutF = num(r.fondateursPayes[y]) * num(r.salaireFondateur[y]) * (y === 0 ? 1.33 : 1.7);
       prevT = tech;
       var capa = num(r.joursDispo[y]) * num(r.volable[y]) / 100;
       var caAbo = sumF * ha * num(r.prixAbo[y]) / 12;
@@ -5234,11 +5254,12 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
       var bill = [];
       for (m = 0; m < 12; m++) bill.push((fermesM[m] * ha * num(r.prixAbo[y]) + captM[m] * ha * num(r.prixCapteurs[y])) / 12 * (1 - rem));
       ops.push({ S: S, F: F, fc: fc, ha: ha, vols: vols, essais: essaisV, fermesM: fermesM, Fmoy: sumF / 12, nS: nS, arrivees: arrivees, jours: jours, km: km, tech: tech,
+        sal: sal, payes: num(r.fondateursPayes[y]), salaireF: num(r.salaireFondateur[y]),
         occ: tech > 0 && capa > 0 ? jours / (capa * tech) : Infinity,
         besoin: capa > 0 ? Math.max(1, Math.ceil(jours / capa - 1e-9)) : Infinity,
         caAbo: caAbo, caCapt: caCapt, remise: brut * rem, ca: brut * (1 - rem), bill: bill,
         delaiM: Math.min(12, Math.max(0, Math.round(num(r.delai[y]) / 30))),
-        base: { fixe: 1, tech: tech, nouvTech: nT, structure: S, nouvStructure: nS, ferme: sumF / 12, fermeCapteur: sumC / 12, nouvFermeCapteur: nFC, km: km, jour: jours } });
+        base: { fixe: 1, tech: tech, nouvTech: nT, salarie: sal, coutFondateurs: coutF, structure: S, nouvStructure: nS, ferme: sumF / 12, fermeCapteur: sumC / 12, nouvFermeCapteur: nFC, km: km, jour: jours } });
     }
     var lines = state.costs.map(function (c) {
       var mult = c.kind === "mois" ? 12 : 1, amounts = [];
@@ -5471,8 +5492,9 @@ table.pa-t{border-collapse:collapse;width:100%;font-size:13px}
     h += line("Vols par an (dont analyses d’essai)", O.map(function (o) { return Math.round(o.vols) + " (" + o.essais + ")"; }));
     h += line("Jours de tournée", O.map(function (o) { return Math.round(o.jours); }));
     h += line("Kilomètres", O.map(function (o) { return Math.round(o.km).toLocaleString("fr-FR"); }));
-    h += line("Techniciens nécessaires (météo comprise) " + info("r:besoin"), O.map(function (o) { return isFinite(o.besoin) ? '<span class="' + (o.besoin > o.tech ? "pa-neg" : "") + '">' + o.besoin + " (prévu : " + o.tech + ")</span>" : "—"; }));
-    h += line("Occupation des techniciens", O.map(function (o) { return isFinite(o.occ) ? '<span class="' + (o.occ > 1 ? "pa-neg" : "") + '">' + Math.round(o.occ * 100) + " %</span>" : "—"; }));
+    h += line("Télépilotes nécessaires (météo comprise) " + info("r:besoin"), O.map(function (o) { return isFinite(o.besoin) ? '<span class="' + (o.besoin > o.tech ? "pa-neg" : "") + '">' + o.besoin + " (prévu : " + o.tech + ")</span>" : "—"; }));
+    h += line("Fondateurs payés / techniciens salariés", O.map(function (o) { return o.payes + " / " + o.sal; }));
+    h += line("Occupation des télépilotes", O.map(function (o) { return isFinite(o.occ) ? '<span class="' + (o.occ > 1 ? "pa-neg" : "") + '">' + Math.round(o.occ * 100) + " %</span>" : "—"; }));
     h += sec("Chiffre d’affaires");
     h += line("Abonnements", O.map(function (o) { return eur(o.caAbo); }));
     h += line("Option capteurs", O.map(function (o) { return eur(o.caCapt); }));
