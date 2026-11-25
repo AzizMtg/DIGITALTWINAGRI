@@ -187,7 +187,7 @@ investisseur.
 
 Scénario **prudent** : 4, 9 puis 15 structures ; 2, 2 puis 3 télépilotes ; 2, 3 puis 5 associés
 payés ; délai de paiement de 45 jours. Scénario **optimiste** : 6, 15 puis 28 structures ; 2, 3
-puis 5 télépilotes.
+puis 6 télépilotes.
 
 ### Les résultats du site (v5)
 
@@ -199,7 +199,7 @@ puis 5 télépilotes.
 | | Résultat net | −12 753 € | 18 745 € | 36 474 € |
 | | Trésorerie en fin d'année | 36 985 € | 39 113 € | 59 742 € |
 | Optimiste | Chiffre d'affaires | 61 420 € | 224 100 € | 448 200 € |
-| | Résultat net | −1 952 € | 47 556 € | 94 005 € |
+| | Résultat net | −1 952 € | 47 556 € | 69 874 € |
 
 Dans le scénario central, le point bas de trésorerie est de 13 626 €. Au mois le plus chargé, il
 faut 1 télépilote en A1 (septembre, 45 % de la capacité), 3 en A2 (septembre, 82 %) et 4 en A3
@@ -354,22 +354,33 @@ moyens de nos clients.
 
 ---
 
-## 7. Points à corriger avant la soutenance (relecture du 25/11)
+## 7. Incohérences relevées et corrigées (25/11)
 
-Une relecture croisée des fichiers a trouvé ces incohérences :
+Une relecture croisée des fichiers a trouvé ces incohérences. Elles sont corrigées dans les fichiers
+HTML le 25/11, sauf mention contraire.
 
-1. **Explications du site** : celle des structures clientes annonce encore 2/3/5, 3/6/9, 4/8/12
-   (valeurs de la v2), alors que le calcul utilise 4/9/15, 5/12/20, 6/15/28. Celle des fermes avec
-   capteurs annonce 3, 6, 9 au lieu de 5, 12, 20.
+1. **Explications du site** : celle des structures clientes annonçait 2/3/5, 3/6/9, 4/8/12 (valeurs
+   de la v2) alors que le calcul utilise 4/9/15, 5/12/20, 6/15/28 ; celle des fermes avec capteurs
+   annonçait 3, 6, 9 au lieu de 5, 12, 20. **Corrigé.**
 2. **Prêt d'honneur** : les 48 000 € entrent dans la trésorerie de la société (apport au capital),
-   alors que l'explication des associés payés dit que ceux qui ne sont pas encore payés en vivent.
-   Le même argent ne peut pas servir aux deux.
-3. **Scénario optimiste, année 3** : il faut 6 télépilotes pour 5 prévus (102 % de la capacité).
-4. **Explication des vols** : elle dit que 15 vols évitent un 2e technicien en année 1, alors que
-   le plan compte déjà 2 télépilotes en année 1 (les deux associés).
-5. **Option capteurs** : les 9 €/ha/an viennent du calculateur du prototype, fait pour une ferme
-   de 100 ha avec des sondes à 400 €. Avec les fermes de 80 ha du plan, le même calcul donne environ
-   11,7 €/ha. Et si l'abonnement Weenat (16,50 à 50 €/mois) est **par sonde**, une ferme à 3 sondes
-   coûte environ 600 €/an pour 720 € de recette : l'option ne rapporte presque rien. À vérifier.
-6. **Prototype** : il annonce une ferme de 100 ha (le plan : 80 ha), ses 7 parcelles font 96 ha, et
-   la démonstration vole chaque semaine alors que l'offre prévoit un vol toutes les deux semaines.
+   alors que l'explication des associés payés disait que ceux qui ne sont pas encore payés en vivent.
+   **Corrigé dans le texte** : leur prêt d'honneur est apporté au capital et ils ne reçoivent rien de
+   la société tant qu'ils ne sont pas payés. Comment ils vivent pendant ce temps reste à préciser.
+3. **Scénario optimiste, année 3** : il fallait 6 télépilotes pour 5 prévus (102 % de la capacité).
+   **Corrigé** : 6 télépilotes (85 % de la capacité au mois le plus chargé). Le résultat net de
+   l'année 3 passe de 94 005 € à 69 874 €. Les réglages déjà enregistrés dans un navigateur sont
+   mis à jour automatiquement s'ils n'avaient pas été modifiés.
+4. **Explication des vols** : elle disait que 15 vols évitent un 2e technicien en année 1, alors que
+   le plan compte déjà 2 télépilotes en année 1. **Corrigé** : espacer les vols divise par deux les
+   jours de tournée, donc le nombre de télépilotes et de fourgonnettes.
+5. **Option capteurs** : les 9 €/ha/an viennent du calculateur du prototype, fait pour une ferme de
+   100 ha avec des sondes à 400 €. Pour une ferme de 80 ha, le même calcul donne environ 11,7 €/ha.
+   Et si l'abonnement Weenat (16,50 à 50 €/mois) est **par sonde**, une ferme à 3 sondes coûte environ
+   600 €/an pour 720 € de recette. **L'explication du site le dit désormais ; le prix reste à
+   décider.**
+6. **Prototype** : ses 7 parcelles faisaient 96 ha pour une ferme annoncée à 100 ha, et la
+   démonstration volait chaque semaine (31 mars, 7 avril, 14 avril) alors que l'offre prévoit un vol
+   toutes les deux semaines. **Corrigé dans `AgriTwin-prototype-DA.html`** : la prairie passe à 10 ha,
+   et les vols ont lieu les 3 mars, 17 mars, 31 mars et 14 avril. L'original d'Aziz n'est pas modifié.
+   **Reste** : la démonstration propose un vol supplémentaire le 17 avril, après l'alerte, présenté
+   comme « inclus dans l'abonnement », alors que l'offre prévoit 15 vols par an.

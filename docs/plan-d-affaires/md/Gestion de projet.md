@@ -120,7 +120,7 @@ Fichiers dans le OneDrive partagé, dossier `PA/Matthéo/` :
 - Aides que l'agriculteur ou la CUMA peut toucher pour financer le service.
 
 **Finance**
-- Corriger les incohérences listées dans [Finance](Finance.md), section 7.
+- Décider du prix de l'option capteurs et de ce qui reste ouvert dans [Finance](Finance.md), section 7.
 - Des devis pour les postes estimés.
 - Le PDF explicatif de la version 5.
 - Vérifier dans DJI Pilot 2 la surface couverte par batterie à 120 m.

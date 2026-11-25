@@ -29,6 +29,20 @@ TXT = [
      'children:["La coopérative ou la CUMA ",d.jsx("b",{className:"text-bone-50",children:"abonne"})," ses fermes adhérentes : l’agriculteur n’achète ni ne gère de matériel. '),
     ('children:"· Tout l’Essentiel"', 'children:"· Tout l’abonnement"'),
     ('`Passer la démo en ${p.name}`', '(p.id?"Activer les capteurs dans la démo":"Revenir à l’abonnement seul")'),
+    # Démo cohérente avec l'offre : un vol toutes les deux semaines (03/03, 17/03, 31/03, 14/04)
+    ('{id:"M-030",date:"17 mars",zone:.79,rest:.76,rain:38},{id:"M-031",date:"31 mars",zone:.78,rest:.77,rain:11},{id:"M-032",date:"07 avr.",zone:.66,rest:.76,rain:3}',
+     '{id:"M-030",date:"03 mars",zone:.79,rest:.76,rain:38},{id:"M-031",date:"17 mars",zone:.78,rest:.77,rain:11},{id:"M-032",date:"31 mars",zone:.66,rest:.76,rain:14}'),
+    ('a=["17 mars","31 mars","07 avr.",t?"14 avr.":null]', 'a=["03 mars","17 mars","31 mars",t?"14 avr.":null]'),
+    ('"Derniers vols : 31 mars, 07 avr., 14 avr."', '"Derniers vols : 17 mars, 31 mars, 14 avr."'),
+    ('children:s==="m031"?"M-031 · 31 mars":"M-032 · 07 avr."', 'children:s==="m031"?"M-031 · 17 mars":"M-032 · 31 mars"'),
+    ('d.jsx(d.Fragment,{children:"M-032 · 07 avr."})', 'd.jsx(d.Fragment,{children:"M-032 · 31 mars"})'),
+    ('l.lastObs.replace("14 avr.","07 avr.")', 'l.lastObs.replace("14 avr.","31 mars")'),
+    ('"mission M-032, 07 avr."', '"mission M-032, 31 mars"'),
+    ('"Dernier vol : il y a 7 jours"', '"Dernier vol : il y a 14 jours"'),
+    ('{date:"07 avr. 2026",type:"drone",title:"Mission M-032 terminée",detail:"Première baisse de vigueur observée au sud-ouest de la parcelle B."},{date:"02 avr. 2026",type:"field",title:"Apport d’azote — parcelles A et B (2e apport)",detail:"60 kg N/ha, saisi par l’agriculteur."},{date:"31 mars 2026",type:"drone",title:"Mission M-031 terminée",detail:"Aucune anomalie détectée."},{date:"24 mars 2026",type:"weather",title:"Dernière pluie significative (11 mm)",detail:"Depuis : 4 mm en 21 jours."},{date:"17 mars 2026",type:"drone",title:"Mission M-030 terminée",',
+     '{date:"02 avr. 2026",type:"field",title:"Apport d’azote — parcelles A et B (2e apport)",detail:"60 kg N/ha, saisi par l’agriculteur."},{date:"31 mars 2026",type:"drone",title:"Mission M-032 terminée",detail:"Première baisse de vigueur observée au sud-ouest de la parcelle B."},{date:"24 mars 2026",type:"weather",title:"Dernière pluie significative (11 mm)",detail:"Depuis : 4 mm en 21 jours."},{date:"17 mars 2026",type:"drone",title:"Mission M-031 terminée",detail:"Aucune anomalie détectée."},{date:"03 mars 2026",type:"drone",title:"Mission M-030 terminée",'),
+    # Les 7 parcelles font 100 ha, comme la ferme annoncée (la prairie passait à 6 ha, total 96)
+    ('variety:"Prairie permanente",area:6,', 'variety:"Prairie permanente",area:10,'),
 ]
 for a, b in TXT:
     n = s.count(a)

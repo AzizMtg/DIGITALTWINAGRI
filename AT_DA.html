@@ -377,7 +377,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     return b;
   }
   var DEFAULTS = {
-    v: 2, equipeV: 1, meteoV: 1,
+    v: 2, equipeV: 1, meteoV: 1, coherV: 1,
     costs: [
       row("Investissements", "Drone DJI Mavic 3M (multispectral)", "invest", "nouvTech", 3800, [1, 1, 1], 3, "3 726 à 3 900 € HT selon revendeur", "https://www.flyingeye.fr", "17/11/2026"),
       row("Investissements", "Drone de secours (Mavic 3M)", "invest", "fixe", 3800, [1, 0, 0], 3, "Une panne en saison ferait perdre 2 à 3 semaines de vols ; même prix que le drone principal", "https://www.flyingeye.fr", "25/11/2026"),
@@ -417,7 +417,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     revs: {
       prudent: revBase({ structures: [4, 9, 15], fermesCapteurs: [4, 9, 15], techniciens: [2, 2, 3], fondateursPayes: [2, 3, 5], delai: [45, 45, 45] }),
       central: revBase({}),
-      optimiste: revBase({ structures: [6, 15, 28], fermesCapteurs: [6, 15, 28], techniciens: [2, 3, 5] })
+      optimiste: revBase({ structures: [6, 15, 28], fermesCapteurs: [6, 15, 28], techniciens: [2, 3, 6] })
     },
     saison: [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
     fin: { apport: 6000, investisseur: 0, pret: 20000, taux: 4.5, duree: 5, honneur: 48000, dureeHonneur: 5, subvention: 0 }
@@ -497,6 +497,10 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       Object.keys(SCEN).forEach(function (k) { if (String(s.revs[k].volable) === "60,60,60") s.revs[k].volable = DEFAULTS.revs[k].volable.slice(); });
       s.meteoV = 1;
     }
+    if (!s.coherV) {  // 25/11/2026 : en optimiste, 6 télépilotes en année 3 (il en fallait 6 pour 5 prévus)
+      if (String(s.revs.optimiste.techniciens) === "2,3,5") s.revs.optimiste.techniciens = [2, 3, 6];
+      s.coherV = 1;
+    }
     s.v = 2;
     return s;
   }
@@ -544,20 +548,20 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     dgac: ["DGAC : formations de télépilote", "https://formation-telepilote.aviation-civile.gouv.fr/"]
   };
   var INFO = {
-    structures: { t: "Structures clientes", d: "Nombre de coopératives, CUMA ou autres structures qui achètent le service pour leurs adhérents. Hypothèse : prudent 2/3/5, central 3/6/9, optimiste 4/8/12. À confirmer par l’étude des payeurs (budgets, décideurs).", s: [] },
+    structures: { t: "Structures clientes", d: "Nombre de coopératives, CUMA ou autres structures qui achètent le service pour leurs adhérents. Hypothèse : prudent 4/9/15, central 5/12/20, optimiste 6/15/28. À confirmer par l’étude des payeurs (budgets, décideurs).", s: [] },
     fermesParStructure: { t: "Fermes par structure", d: "Nombre de fermes adhérentes que chaque structure fait suivre. Hypothèse de départ : 4 fermes par structure.", s: [] },
     ha: { t: "Surface moyenne d’une ferme", d: "Haute-Vienne : 3 604 exploitations pour 286 004 ha de surface agricole (recensement 2020), soit ≈ 79 ha en moyenne. Arrondi à 80 ha.", s: ["insee", "agrimap"] },
     moisDebut: { t: "Démarrage progressif", d: "Janvier et février servent à créer la société, former le télépilote et démarcher. La 1re structure démarre en mars, avec la saison de vol ; les suivantes signent à intervalles réguliers jusqu’à la fin de l’année. Les années suivantes, les nouvelles structures arrivent en janvier, mai et septembre.", s: [] },
     essais: { t: "Analyse d’essai offerte", d: "Avant de signer, chaque nouvelle structure reçoit une analyse gratuite sur une de ses fermes : un vol et une carte de vigueur. C’est un coût commercial (journée du technicien, kilomètres), pas une formule payante.", s: [] },
     prixAbo: { t: "Prix de l’abonnement", d: "60 €/ha/an pour 15 vols, soit 4 €/ha par vol. Repères : un prestataire drone facture dès 15 €/ha par vol ; le satellite coûte 12 à 16 €/ha par campagne ; le gain annoncé pour l’agriculteur va de 28 à 60 €/ha. Prix retenu le 17/11/2026 (scénario C).", s: ["feldfalke", "lfa"] },
-    volsAbo: { t: "Vols par an", d: "Un vol toutes les deux semaines sur une saison de 30 semaines = 15 vols. Choisi le 17/11/2026 pour éviter un 2e technicien dès la 1re année.", s: [] },
-    fermesCapteurs: { t: "Fermes équipées de capteurs", d: "Nombre de fermes qui prennent l’option capteurs (3 sondes de sol chacune) en fin d’année. Scénario central : 3, 6 puis 9, soit une ferme sur quatre. Les sondes sont achetées l’année où la ferme est équipée.", s: ["weenat"] },
-    prixCapteurs: { t: "Prix de l’option capteurs", d: "≈ 9 €/ha/an pour 3 sondes, repris du prototype. Coût en face : sonde Weenat ≈ 350 € et abonnement aux données 16,50 à 50 €/mois.", s: ["weenat"] },
+    volsAbo: { t: "Vols par an", d: "Un vol toutes les deux semaines sur une saison de 30 semaines = 15 vols. Choisi le 17/11/2026 : par rapport à un vol chaque semaine, les jours de tournée sont divisés par deux, et avec eux le nombre de télépilotes et de fourgonnettes.", s: [] },
+    fermesCapteurs: { t: "Fermes équipées de capteurs", d: "Nombre de fermes qui prennent l’option capteurs (3 sondes de sol chacune) en fin d’année. Scénario central : 5, 12 puis 20, soit une ferme sur quatre (une par structure). Les sondes sont achetées l’année où la ferme est équipée.", s: ["weenat"] },
+    prixCapteurs: { t: "Prix de l’option capteurs", d: "≈ 9 €/ha/an pour 3 sondes, calculé dans le prototype pour une ferme de 100 ha (sondes à 400 €, installation, maintenance, connectivité et abonnement compris, amortis sur 3 ans). Sur une ferme de 80 ha, le même calcul donne ≈ 11,7 €/ha : prix à confirmer. Coût en face dans ce plan : sonde Weenat ≈ 350 € et abonnement aux données 16,50 à 50 €/mois (par sonde ou par ferme : à vérifier).", s: ["weenat"] },
     remise: { t: "Remise aux structures", d: "Remise sur volume accordée à une structure qui fait suivre plusieurs fermes. 0 % par défaut.", s: [] },
     delai: { t: "Délai de paiement", d: "Temps entre la facture et le paiement. Entre entreprises, la loi plafonne à 60 jours après la facture (ou 45 jours fin de mois). Les factures pas encore payées en fin d’année forment le BFR.", s: ["delais"] },
     techniciens: { t: "Télépilotes", d: "Tous ceux qui volent : les fondateurs télépilotes et les techniciens salariés. Chacun a son drone, sa fourgonnette, sa formation et son téléphone. Comparez avec la ligne « Télépilotes nécessaires ».", s: [] },
     pilotesFondateurs: { t: "Fondateurs télépilotes", d: "Deux des six fondateurs volent. Au-delà, on embauche des techniciens au SMIC.", s: [] },
-    fondateursPayes: { t: "Fondateurs payés", d: "Les six associés travaillent à plein temps. La paie suit le chiffre d’affaires : les 2 télépilotes en année 1, 4 fondateurs en année 2, les 6 en année 3. Ceux qui ne sont pas encore payés vivent de leur prêt d’honneur personnel.", s: [] },
+    fondateursPayes: { t: "Fondateurs payés", d: "Les six associés travaillent à plein temps. La paie suit le chiffre d’affaires : les 2 télépilotes en année 1, 4 fondateurs en année 2, les 6 en année 3. Ceux qui ne sont pas encore payés ne reçoivent rien de la société : leur prêt d’honneur est apporté au capital (voir « Prêts d’honneur »).", s: [] },
     salaireFondateur: { t: "Salaire d’un fondateur", d: "1 000 € net par mois en année 1, 1 200 € en année 2, 1 500 € en année 3. Coût pour la société : × 1,33 en année 1 grâce à l’ACRE, × 1,70 ensuite (règle du modèle Excel du cours pour un dirigeant de SAS).", s: [] },
     fermesParJour: { t: "Fermes par jour de tournée", d: "Nombre de fermes de 80 ha survolées en une journée, trajets compris. Hypothèse du 17/11/2026.", s: [] },
     kmParJour: { t: "Km par jour", d: "Distance moyenne d’une journée de tournée en Haute-Vienne et Creuse. Hypothèse du 17/11/2026.", s: [] },

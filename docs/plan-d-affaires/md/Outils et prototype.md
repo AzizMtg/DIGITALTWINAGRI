@@ -36,8 +36,9 @@ Retour à l'[accueil du dossier](README.md).
   on relance le script.
 - **Limite** : il garde le concept de station autonome à la ferme, alors que le plan d'affaires
   suppose des télépilotes en fourgonnette. Seul le code source permettrait de changer ce concept.
-  La démonstration montre aussi encore des vols chaque semaine (voir [Finance](Finance.md),
-  section 7).
+- **Corrections du 25/11** : la démonstration vole désormais toutes les deux semaines (3 mars,
+  17 mars, 31 mars, 14 avril) et les 7 parcelles totalisent bien 100 ha (prairie à 10 ha). Voir
+  [Finance](Finance.md), section 7.
 
 ## 3. Le site du plan d'affaires
 
