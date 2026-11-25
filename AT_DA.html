@@ -351,6 +351,10 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
   };
   var VARIABLE = { ferme: 1, fermeCapteur: 1, nouvFermeCapteur: 1, km: 1, jour: 1 };
   var SEASONAL = { km: 1, jour: 1 };
+  // Part des jours volables par mois à Limoges : jours sans pluie d’au moins 1 mm (Météo-France, normales 1995-2010)
+  // moins environ 3 jours par mois de vent fort, de nuages bas ou de panne.
+  var METEO = [49, 52, 56, 49, 55, 64, 59, 60, 61, 54, 41, 48];
+  var JOURS_OUVRES_MOIS = 21;
   var CATS = ["Investissements", "Création et démarrage", "Personnel", "Véhicule et déplacements",
     "Drone et logiciels", "Assurances", "Gestion et administratif", "Commercial", "Capteurs"];
   var C_CA = "#b8892a", C_CH = "#4a90d9", C_LINE = "#b9cdb0";
@@ -366,16 +370,17 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       fermesCapteurs: [5, 12, 20], prixCapteurs: [9, 9, 9], remise: [0, 0, 0],
       techniciens: [2, 3, 4], pilotesFondateurs: [2, 2, 2], fondateursPayes: [2, 4, 6], salaireFondateur: [1000, 1200, 1500],
       fermesParJour: [3, 3, 3], kmParJour: [150, 150, 150],
-      visites: [3, 3, 3], kmVisite: [70, 70, 70], joursDispo: [150, 150, 150], volable: [60, 60, 60],
+      visites: [3, 3, 3], kmVisite: [70, 70, 70], joursDispo: [150, 150, 150], volable: [58, 58, 58], samedis: [0, 0, 2],
       delai: [30, 30, 30]
     };
     for (var k in o) b[k] = o[k];
     return b;
   }
   var DEFAULTS = {
-    v: 2, equipeV: 1,
+    v: 2, equipeV: 1, meteoV: 1,
     costs: [
       row("Investissements", "Drone DJI Mavic 3M (multispectral)", "invest", "nouvTech", 3800, [1, 1, 1], 3, "3 726 à 3 900 € HT selon revendeur", "https://www.flyingeye.fr", "17/11/2026"),
+      row("Investissements", "Drone de secours (Mavic 3M)", "invest", "fixe", 3800, [1, 0, 0], 3, "Une panne en saison ferait perdre 2 à 3 semaines de vols ; même prix que le drone principal", "https://www.flyingeye.fr", "25/11/2026"),
       row("Investissements", "Kit 3 batteries + hub de charge 100 W", "invest", "fixe", 412.5, [1, 0, 1], 2, "Flyingeye, 495 € TTC", "https://www.flyingeye.fr/fr/products/accessoires/dji-batterie-kit-mavic-3-enterprise"),
       row("Investissements", "Ordinateur portable pour le traitement des images", "invest", "fixe", 1500, [1, 0, 0], 3, "Estimation"),
       row("Investissements", "Développement de la plateforme (jumeau numérique)", "invest", "fixe", 0, [1, 0, 0], 3, "Fait par l’équipe : 0 € (à valoriser si besoin)"),
@@ -442,7 +447,8 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     ["visites", "Visites commerciales par nouvelle structure", ""],
     ["kmVisite", "Km par visite commerciale", "km"],
     ["joursDispo", "Jours ouvrés de la saison de vol, par technicien", "j"],
-    ["volable", "Part de ces jours où la météo permet de voler", "%"]
+    ["volable", "Part de ces jours où la météo permet de voler", "%"],
+    ["samedis", "Samedis volés au plus par mois et par télépilote, en pointe", "j"]
   ];
   var FIN_ROWS = [
     ["apport", "Apport des associés", "€"], ["investisseur", "Investisseur au capital", "€"], ["pret", "Prêt bancaire", "€"], ["taux", "Taux du prêt", "%/an"],
@@ -481,6 +487,16 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
         if (dc) { c.prix = dc.prix; c.source = dc.source; c.url = dc.url; c.date = dc.date; }
       }
     });
+    if (!s.meteoV) {  // 25/11/2026 : drone de secours et météo mois par mois
+      if (!s.costs.some(function (c) { return /^Drone de secours/.test(c.poste); })) {
+        var di = -1;
+        s.costs.forEach(function (c, i) { if (c.poste === "Drone DJI Mavic 3M (multispectral)") di = i; });
+        var sec = DEFAULTS.costs.filter(function (x) { return /^Drone de secours/.test(x.poste); })[0];
+        s.costs.splice(di >= 0 ? di + 1 : 0, 0, clone(sec));
+      }
+      Object.keys(SCEN).forEach(function (k) { if (String(s.revs[k].volable) === "60,60,60") s.revs[k].volable = DEFAULTS.revs[k].volable.slice(); });
+      s.meteoV = 1;
+    }
     s.v = 2;
     return s;
   }
@@ -510,6 +526,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
 
   /* ---------- Sources et explications (bouton « ? ») ---------- */
   var SRC = {
+    meteo: ["Météo-France : fiche climatologique de Limoges (1995-2010)", "https://donneespubliques.meteofrance.fr/FichesClim/FICHECLIM_87085009.pdf"],
     agrimap: ["AgriMap, registre parcellaire 2024", "https://agri-map.fr"],
     insee: ["Insee, recensement agricole 2020", "https://www.insee.fr"],
     feldfalke: ["Feldfalke, prestataire drone (prix à l’hectare)", "https://www.feldfalke.com"],
@@ -547,7 +564,9 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     visites: { t: "Visites commerciales", d: "Rendez-vous nécessaires pour signer une nouvelle structure. Hypothèse : 3 visites.", s: [] },
     kmVisite: { t: "Km par visite", d: "Aller-retour moyen vers une structure du département. Hypothèse : 70 km.", s: [] },
     joursDispo: { t: "Jours ouvrés de la saison", d: "Saison de vol de mars à septembre : environ 30 semaines × 5 jours = 150 jours par technicien.", s: [] },
-    volable: { t: "Jours où l’on peut voler", d: "Pluie et vent fort empêchent les vols ; le Mavic 3M résiste à un vent d’environ 12 m/s. 60 % est une estimation, à confirmer avec les relevés de Météo-France pour Limoges.", s: ["dji"] },
+    volable: { t: "Jours où l’on peut voler", d: "Pluie et vent fort empêchent les vols ; le Mavic 3M résiste à un vent d’environ 12 m/s. À Limoges, de mars à septembre, 58 % des jours sont volables : jours sans pluie d’au moins 1 mm (Météo-France), moins environ 3 jours par mois de vent ou de nuages bas. Avril est le pire mois (49 %), juin le meilleur (64 %).", s: ["meteo", "dji"] },
+    samedis: { t: "Samedis en pointe", d: "Nombre maximal de samedis volés par mois et par télépilote quand la saison est chargée. Ils sont récupérés l’hiver (repos compensateur), donc sans surcoût. Sert au contrôle du mois le plus chargé.", s: [] },
+    "r:pic": { t: "Mois le plus chargé", d: "Pour chaque mois de vol : jours de tournée du mois ÷ ((21 jours ouvrés + samedis) × part volable du mois, d’après Météo-France). On garde le mois le plus tendu. Une moyenne annuelle cache ce pic : avril et la fin de saison, quand toutes les fermes de l’année sont arrivées.", s: ["meteo"] },
     apport: { t: "Apport des associés", d: "Argent mis par les fondateurs au capital. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
     investisseur: { t: "Investisseur au capital", d: "0 € sur les trois premières années : la société se lance avec ses fondateurs, leurs prêts d’honneur et un prêt bancaire. La demande au jury vient après l’année 3, pour étendre AgriTwin au reste du Limousin. Vous pouvez tester ici l’effet d’un apport.", s: [] },
     pret: { t: "Prêt bancaire", d: "Montant emprunté, remboursé par annuités constantes. Repris du prévisionnel Excel du 17/11/2026.", s: [] },
@@ -634,6 +653,13 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       var coutF = num(r.fondateursPayes[y]) * num(r.salaireFondateur[y]) * (y === 0 ? 1.33 : 1.7);
       prevT = tech;
       var capa = num(r.joursDispo[y]) * num(r.volable[y]) / 100;
+      // mois le plus chargé : jours de tournée du mois ÷ (jours ouvrés + samedis) × part volable du mois
+      var fpj = num(r.fermesParJour[y]), joursM = JOURS_OUVRES_MOIS + num(r.samedis[y]), pic = { besoin: 0, occ: 0, m: -1, jours: 0 };
+      for (m = 0; m < 12; m++) {
+        if (!on[m] || fpj <= 0) continue;
+        var jm = volsM[m] / fpj, cm = joursM * METEO[m] / 100, om = tech > 0 ? jm / (cm * tech) : Infinity;
+        if (pic.m < 0 || om > pic.occ) pic = { besoin: Math.max(1, Math.ceil(jm / cm - 1e-9)), occ: om, m: m, jours: jm };
+      }
       var caAbo = sumF * ha * num(r.prixAbo[y]) / 12;
       var caCapt = sumC * ha * num(r.prixCapteurs[y]) / 12;
       var brut = caAbo + caCapt, rem = num(r.remise[y]) / 100;
@@ -641,7 +667,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
       for (m = 0; m < 12; m++) bill.push((fermesM[m] * ha * num(r.prixAbo[y]) + captM[m] * ha * num(r.prixCapteurs[y])) / 12 * (1 - rem));
       ops.push({ S: S, F: F, fc: fc, ha: ha, vols: vols, essais: essaisV, fermesM: fermesM, Fmoy: sumF / 12, nS: nS, arrivees: arrivees, jours: jours, km: km, tech: tech,
         sal: sal, payes: num(r.fondateursPayes[y]), salaireF: num(r.salaireFondateur[y]),
-        occ: tech > 0 && capa > 0 ? jours / (capa * tech) : Infinity,
+        occ: tech > 0 && capa > 0 ? jours / (capa * tech) : Infinity, pic: pic,
         besoin: capa > 0 ? Math.max(1, Math.ceil(jours / capa - 1e-9)) : Infinity,
         caAbo: caAbo, caCapt: caCapt, remise: brut * rem, ca: brut * (1 - rem), bill: bill,
         delaiM: Math.min(12, Math.max(0, Math.round(num(r.delai[y]) / 30))),
@@ -746,6 +772,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     $("annees").innerHTML = html;
     // Alertes
     var a = [];
+    O.forEach(function (o, y) { if (o.occ <= 1 && o.pic.m >= 0 && o.pic.besoin > o.tech) a.push(["", "Année " + (y + 1) + " : en " + MOIS[o.pic.m] + ", il faut " + o.pic.besoin + " télépilotes (" + Math.round(o.pic.occ * 100) + " % de la capacité). Ajoutez des samedis en pointe ou un télépilote."]); });
     O.forEach(function (o, y) { if (o.occ > 1) a.push(["", "Année " + (y + 1) + " : il faut " + o.besoin + " technicien(s) pour " + Math.round(o.jours) + " jours de tournée. Ajoutez-en un dans les hypothèses ou espacez les vols."]); });
     R.forEach(function (x, y) { if (x.minM < 0) a.push(["grave", "Année " + (y + 1) + " : la trésorerie descend à " + eur(x.minM) + ". Augmentez l’apport ou le prêt (Financement de départ)."]); });
     var dir = state.costs.filter(function (c) { return c.cat === "Personnel" && /dirigeant/i.test(c.poste); });
@@ -870,7 +897,7 @@ input[type=range]{width:100%;accent-color:var(--vigueur);height:28px;margin:0}
     } else if (panneauType === "resultat") {
       var O = C.ops, R = C.res, ln = function (l, v, cl) { return "<tr" + (cl ? ' class="' + cl + '"' : "") + "><td>" + l + "</td>" + v.map(function (x) { return '<td class="r">' + x + "</td>"; }).join("") + "</tr>"; }, sec = function (t) { return '<tr class="sec"><td colspan="4">' + t + "</td></tr>"; };
       h = '<div class="defile"><table class="tab"><thead><tr><th></th><th class="r">Année 1</th><th class="r">Année 2</th><th class="r">Année 3</th></tr></thead><tbody>';
-      h += sec("Activité") + ln("Fermes suivies en fin d’année", O.map(function (o) { return o.F; })) + ln("Nouvelles structures (mois d’arrivée)", O.map(function (o) { return o.nS + (o.arrivees.length ? " (" + o.arrivees.map(function (a) { return MOIS[a]; }).join(", ") + ")" : ""); })) + ln("Vols (dont essais offerts)", O.map(function (o) { return Math.round(o.vols) + " (" + o.essais + ")"; })) + ln("Jours de tournée", O.map(function (o) { return Math.round(o.jours); })) + ln("Fondateurs payés / techniciens salariés", O.map(function (o) { return o.payes + " / " + o.sal; })) + ln("Télépilotes nécessaires " + info("r:besoin"), O.map(function (o) { return '<span class="' + (o.besoin > o.tech ? "neg" : "") + '">' + o.besoin + " (prévu " + o.tech + ")</span>"; }));
+      h += sec("Activité") + ln("Fermes suivies en fin d’année", O.map(function (o) { return o.F; })) + ln("Nouvelles structures (mois d’arrivée)", O.map(function (o) { return o.nS + (o.arrivees.length ? " (" + o.arrivees.map(function (a) { return MOIS[a]; }).join(", ") + ")" : ""); })) + ln("Vols (dont essais offerts)", O.map(function (o) { return Math.round(o.vols) + " (" + o.essais + ")"; })) + ln("Jours de tournée", O.map(function (o) { return Math.round(o.jours); })) + ln("Fondateurs payés / techniciens salariés", O.map(function (o) { return o.payes + " / " + o.sal; })) + ln("Télépilotes nécessaires " + info("r:besoin"), O.map(function (o) { return '<span class="' + (o.besoin > o.tech ? "neg" : "") + '">' + o.besoin + " (prévu " + o.tech + ")</span>"; })) + ln("Au mois le plus chargé " + info("r:pic"), O.map(function (o) { return o.pic.m >= 0 ? '<span class="' + (o.pic.besoin > o.tech ? "neg" : "") + '">' + o.pic.besoin + " en " + MOIS[o.pic.m] + " (" + Math.round(o.pic.occ * 100) + " %)</span>" : "—"; }));
       h += sec("Chiffre d’affaires " + info("r:ca")) + ln("Abonnements", O.map(function (o) { return eur(o.caAbo); })) + ln("Option capteurs", O.map(function (o) { return eur(o.caCapt); })) + ln("Remise", O.map(function (o) { return o.remise ? "− " + eur(o.remise) : eur(0); })) + ln("Total", O.map(function (o) { return eur(o.ca); }), "fort");
       h += ln("Par structure " + info("r:structure"), O.map(function (o) { return o.S ? eur(o.ca / o.S) : "—"; })) + ln("Par hectare", O.map(function (o) { return o.Fmoy && o.ha ? (o.ca / o.Fmoy / o.ha).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) + " €" : "—"; }));
       h += sec("Charges");
